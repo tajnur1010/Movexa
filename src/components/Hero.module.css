@@ -1,0 +1,224 @@
+.hero {
+  position: relative;
+  width: 100%;
+  /* anamorphic 2.39:1 widescreen framing — the identity of Movexa */
+  aspect-ratio: 2.39 / 1;
+  min-height: 420px;
+  max-height: 76vh;
+  overflow: hidden;
+  border-radius: 0 0 var(--radius) var(--radius);
+  isolation: isolate;
+}
+
+.bg {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center 18%;
+  opacity: 0;
+  transform: scale(1.06);
+  transition: opacity 1.1s var(--ease), transform 8s linear;
+  z-index: 0;
+}
+.bgActive {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* Letterbox + directional scrim so text is always legible */
+.scrim {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background:
+    linear-gradient(90deg, rgba(9,10,15,0.95) 0%, rgba(9,10,15,0.65) 38%, rgba(9,10,15,0.1) 68%, rgba(9,10,15,0.0) 100%),
+    linear-gradient(0deg, var(--bg) 2%, rgba(11,13,19,0.2) 32%, transparent 60%);
+}
+
+/* Signature: a thin anamorphic lens-flare streak */
+.streak {
+  position: absolute;
+  left: -10%;
+  right: -10%;
+  top: 30%;
+  height: 2px;
+  z-index: 1;
+  background: linear-gradient(90deg, transparent, rgba(255,190,120,0.0) 20%, rgba(255,190,120,0.55) 50%, rgba(255,120,120,0.0) 80%, transparent);
+  filter: blur(1px);
+  opacity: 0.6;
+  animation: streakGlow 7s var(--ease) infinite;
+}
+@keyframes streakGlow {
+  0%, 100% { opacity: 0.25; }
+  50% { opacity: 0.7; }
+}
+
+.content {
+  position: absolute;
+  z-index: 2;
+  left: 0;
+  bottom: clamp(1.5rem, 6vh, 3.5rem);
+  max-width: min(640px, 92%);
+  padding: 0 clamp(1.2rem, 5vw, 3.5rem);
+  animation: rise 0.7s var(--ease) both;
+}
+
+.tags {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+.featured {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #12070a;
+  background: var(--accent-line);
+  padding: 4px 10px;
+  border-radius: 5px;
+  font-weight: 700;
+}
+.dot {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  padding: 3px 9px;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  background: rgba(8,10,15,0.4);
+}
+.ratingTag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--gold);
+  padding: 3px 9px;
+  border: 1px solid rgba(255,200,97,0.3);
+  border-radius: 20px;
+}
+
+.title {
+  font-size: clamp(2rem, 6vw, 4rem);
+  font-weight: 800;
+  line-height: 1.02;
+  letter-spacing: -0.03em;
+  color: #fff;
+  text-shadow: 0 2px 30px rgba(0,0,0,0.6);
+  margin-bottom: 0.9rem;
+  animation: rise 0.6s var(--ease) both;
+}
+
+.overview {
+  font-size: clamp(0.9rem, 1.6vw, 1.05rem);
+  color: rgba(244,246,251,0.82);
+  line-height: 1.6;
+  max-width: 560px;
+  margin-bottom: 1.5rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.play, .info {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 13px 26px;
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 700;
+  border-radius: 12px;
+  border: 1px solid transparent;
+  transition: transform 0.2s var(--ease), box-shadow 0.2s var(--ease), background 0.2s var(--ease);
+}
+.play {
+  color: #14070a;
+  background: var(--accent-line);
+  box-shadow: 0 10px 30px rgba(255, 106, 61, 0.35);
+}
+.play:hover { transform: translateY(-2px); box-shadow: 0 16px 40px rgba(255, 106, 61, 0.5); }
+
+.info {
+  color: var(--text);
+  background: var(--glass-hi);
+  border-color: var(--border-hi);
+  backdrop-filter: blur(10px);
+}
+.info:hover { transform: translateY(-2px); background: rgba(255,255,255,0.12); }
+
+.nav {
+  position: absolute;
+  z-index: 3;
+  top: 50%;
+  transform: translateY(-50%);
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  color: #fff;
+  background: rgba(8, 10, 15, 0.45);
+  border: 1px solid var(--border-hi);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  opacity: 0;
+  transition: opacity 0.28s var(--ease), background 0.2s var(--ease), transform 0.2s var(--ease);
+}
+.hero:hover .nav { opacity: 1; }
+.nav:hover { background: rgba(8, 10, 15, 0.8); }
+.nav:focus-visible { opacity: 1; }
+.navPrev { left: clamp(0.6rem, 2vw, 1.4rem); }
+.navPrev:hover { transform: translateY(-50%) translateX(-2px); }
+.navNext { right: clamp(0.6rem, 2vw, 1.4rem); }
+.navNext:hover { transform: translateY(-50%) translateX(2px); }
+
+.dots {
+  position: absolute;
+  z-index: 3;
+  right: clamp(1.2rem, 5vw, 3.5rem);
+  bottom: clamp(1.5rem, 6vh, 3.5rem);
+  display: flex;
+  gap: 8px;
+}
+.pageDot {
+  width: 26px;
+  height: 4px;
+  border: none;
+  border-radius: 4px;
+  background: rgba(255,255,255,0.25);
+  transition: background 0.3s var(--ease), width 0.3s var(--ease);
+}
+.pageDot:hover { background: rgba(255,255,255,0.5); }
+.pageActive { width: 40px; background: var(--accent-line); }
+
+.skeleton {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, #12151d 25%, #1b212c 50%, #12151d 75%);
+  background-size: 800px 100%;
+  animation: shimmer 1.6s infinite linear;
+}
+
+@media (max-width: 900px) {
+  .hero { aspect-ratio: 16 / 10; max-height: none; }
+  .dots { display: none; }
+  .nav { opacity: 1; width: 42px; height: 42px; background: rgba(8, 10, 15, 0.55); }
+}
+@media (max-width: 560px) {
+  .hero { aspect-ratio: 4 / 5; min-height: 460px; }
+  .content { max-width: 100%; }
+}
