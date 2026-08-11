@@ -128,6 +128,9 @@ export default function Header({ route }) {
               placeholder="Search titles…"
               className={styles.searchInput}
               aria-label="Search"
+              autoComplete="off"
+              autoCorrect="off"
+              spellCheck={false}
             />
             <button type={searchOpen ? 'submit' : 'button'} className={styles.iconBtn}
               onClick={() => { if (!searchOpen) setSearchOpen(true) }} aria-label="Search">

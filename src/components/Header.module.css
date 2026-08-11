@@ -188,6 +188,20 @@
 }
 .searchOpen .searchInput { width: auto; opacity: 1; padding: 10px 4px; }
 .searchInput::placeholder { color: var(--text-dim); }
+.searchInput:focus { outline: none; box-shadow: none; }
+/* Match text selection to the theme instead of the harsh default blue. */
+.searchInput::selection { background: var(--accent-soft); color: var(--text); }
+/* Kill Chrome's dark-mode autofill tint (the blue box behind remembered
+   search terms) — paint the field with the surface color instead. */
+.searchInput:-webkit-autofill,
+.searchInput:-webkit-autofill:hover,
+.searchInput:-webkit-autofill:focus,
+.searchInput:-webkit-autofill:active {
+  -webkit-text-fill-color: var(--text);
+  -webkit-box-shadow: 0 0 0 1000px var(--surface) inset;
+  caret-color: var(--text);
+  transition: background-color 9999s ease-out 0s;
+}
 
 .iconBtn, .clearBtn, .menuBtn {
   display: grid;
