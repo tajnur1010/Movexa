@@ -1,11 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react'
 import {
   api, backdropUrl, posterUrl, profileUrl, movieEmbedUrl, tvEmbedUrl,
-  movieDownloadUrl, tvDownloadUrl,
   formatRating, getYear, runtimeText, pickTrailer, normalize,
 } from '../lib/api.js'
 import { navigate, routes } from '../lib/router.js'
-import { IconPlay, IconClose, IconStar, IconDownload } from './Icons.jsx'
+import { IconPlay, IconClose, IconStar } from './Icons.jsx'
 import Player from './Player.jsx'
 import SeasonPicker from './SeasonPicker.jsx'
 import styles from './DetailModal.module.css'
@@ -152,16 +151,6 @@ export default function DetailModal({ type, id, onClose }) {
                           {showTrailer ? 'Hide Trailer' : 'Watch Trailer'}
                         </button>
                       )}
-                      {!isTV && (
-                        <a
-                          className={styles.downloadBtn}
-                          href={movieDownloadUrl(id)}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          <IconDownload size={18} /> Download
-                        </a>
-                      )}
                     </div>
                   </div>
                 </div>
@@ -176,17 +165,7 @@ export default function DetailModal({ type, id, onClose }) {
 
                 {play && (
                   <section className={styles.section} ref={playRef}>
-                    <div className={styles.nowHead}>
-                      <h2 className={styles.h2}>Now Playing</h2>
-                      <a
-                        className={styles.downloadBtnSm}
-                        href={isTV ? tvDownloadUrl(id, play.season, play.episode) : movieDownloadUrl(id)}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        <IconDownload size={16} /> Download
-                      </a>
-                    </div>
+                    <h2 className={styles.h2}>Now Playing</h2>
                     <Player src={play.src} label={play.label} />
                   </section>
                 )}
