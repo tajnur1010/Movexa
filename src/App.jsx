@@ -57,10 +57,7 @@ export default function App() {
             Movexa does not host any files.
           </p>
           <p className={styles.footCopy}>
-            &copy; {new Date().getFullYear()} Movexa · Widescreen streaming, democratized ·{' '}
-            <a href="https://www.codespecters.com/" target="_blank" rel="noopener noreferrer" className={styles.footLink}>
-              Code Specter
-            </a>
+            &copy; {new Date().getFullYear()} Movexa · Widescreen streaming, democratized
           </p>
         </div>
       </footer>
