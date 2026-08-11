@@ -73,6 +73,14 @@ export const WORLDS = {
 // Nav order shown in the header.
 export const WORLD_ORDER = ['movies', 'series', 'anime', 'hollywood', 'bollywood', 'south', 'telugu', 'bangla', 'korean']
 
+// Header layout, Netflix-style: a few primary links always visible, and the
+// rest tucked into a grouped "Categories" dropdown so the bar stays clean.
+export const PRIMARY_NAV = ['movies', 'series']
+export const NAV_GROUPS = [
+  { label: 'Indian Cinema', worlds: ['bollywood', 'south', 'telugu', 'bangla'] },
+  { label: 'International', worlds: ['hollywood', 'korean', 'anime'] },
+]
+
 export const SORT_OPTIONS = [
   { value: 'popularity.desc', label: 'Popular' },
   { value: 'rating', label: 'Top Rated' }, // mapped to vote_average.desc + vote_count.gte

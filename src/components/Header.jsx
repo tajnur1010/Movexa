@@ -1,15 +1,17 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { WORLD_ORDER, WORLDS } from '../data/worlds.js'
+import { WORLDS, PRIMARY_NAV, NAV_GROUPS } from '../data/worlds.js'
 import { navigate, routes } from '../lib/router.js'
-import { Logo, IconSearch, IconClose, IconMenu } from './Icons.jsx'
+import { Logo, IconSearch, IconClose, IconMenu, IconChevronD } from './Icons.jsx'
 import styles from './Header.module.css'
 
 export default function Header({ route }) {
   const [scrolled, setScrolled] = useState(false)
   const [searchOpen, setSearchOpen] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
+  const [catOpen, setCatOpen] = useState(false)
   const [q, setQ] = useState(route?.params?.q || '')
   const inputRef = useRef(null)
+  const catRef = useRef(null)
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12)
@@ -26,8 +28,6 @@ export default function Header({ route }) {
 
   // Keep the input in sync with the active search route, and keep the box
   // open on the results page so the query is always visible and editable.
-  // Without this the box holds the first query forever and reopening it to
-  // search again feels broken.
   useEffect(() => {
     if (route?.name === 'search') {
       setQ(route.params.q || '')
@@ -35,10 +35,23 @@ export default function Header({ route }) {
     }
   }, [route])
 
-  useEffect(() => { setMenuOpen(false) }, [route])
+  // Close menus whenever the route changes.
+  useEffect(() => { setMenuOpen(false); setCatOpen(false) }, [route])
+
+  // Close the categories dropdown on outside click / Escape.
+  useEffect(() => {
+    if (!catOpen) return
+    const onDoc = (e) => { if (catRef.current && !catRef.current.contains(e.target)) setCatOpen(false) }
+    const onKey = (e) => { if (e.key === 'Escape') setCatOpen(false) }
+    document.addEventListener('mousedown', onDoc)
+    document.addEventListener('keydown', onKey)
+    return () => { document.removeEventListener('mousedown', onDoc); document.removeEventListener('keydown', onKey) }
+  }, [catOpen])
 
   const activeWorld = route?.name === 'world' ? route.params.world : null
   const isHome = route?.name === 'home'
+  // Is the current world one that lives inside the Categories dropdown?
+  const inCategories = activeWorld && !PRIMARY_NAV.includes(activeWorld)
 
   function submitSearch(e) {
     e.preventDefault()
@@ -63,7 +76,8 @@ export default function Header({ route }) {
           >
             Home
           </button>
-          {WORLD_ORDER.map(key => (
+
+          {PRIMARY_NAV.map(key => (
             <button
               key={key}
               className={`${styles.link} ${activeWorld === key ? styles.active : ''}`}
@@ -72,6 +86,37 @@ export default function Header({ route }) {
               {WORLDS[key].label}
             </button>
           ))}
+
+          <div className={styles.catWrap} ref={catRef}>
+            <button
+              className={`${styles.link} ${styles.catTrigger} ${inCategories ? styles.active : ''} ${catOpen ? styles.catTriggerOpen : ''}`}
+              onClick={() => setCatOpen(o => !o)}
+              aria-haspopup="true"
+              aria-expanded={catOpen}
+            >
+              Categories <IconChevronD size={15} />
+            </button>
+
+            {catOpen && (
+              <div className={styles.dropdown} role="menu">
+                {NAV_GROUPS.map(group => (
+                  <div key={group.label} className={styles.dropGroup}>
+                    <span className={styles.dropGroupLabel}>{group.label}</span>
+                    {group.worlds.map(key => (
+                      <button
+                        key={key}
+                        role="menuitem"
+                        className={`${styles.dropItem} ${activeWorld === key ? styles.dropItemActive : ''}`}
+                        onClick={() => navigate(routes.world(key))}
+                      >
+                        {WORLDS[key].label}
+                      </button>
+                    ))}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
         </nav>
 
         <div className={styles.right}>
@@ -104,10 +149,20 @@ export default function Header({ route }) {
       {menuOpen && (
         <div className={styles.mobileMenu}>
           <button className={`${styles.mLink} ${isHome ? styles.active : ''}`} onClick={() => navigate(routes.home())}>Home</button>
-          {WORLD_ORDER.map(key => (
+          {PRIMARY_NAV.map(key => (
             <button key={key} className={`${styles.mLink} ${activeWorld === key ? styles.active : ''}`} onClick={() => navigate(routes.world(key))}>
               {WORLDS[key].label}
             </button>
+          ))}
+          {NAV_GROUPS.map(group => (
+            <div key={group.label} className={styles.mGroup}>
+              <span className={styles.mGroupLabel}>{group.label}</span>
+              {group.worlds.map(key => (
+                <button key={key} className={`${styles.mLink} ${activeWorld === key ? styles.active : ''}`} onClick={() => navigate(routes.world(key))}>
+                  {WORLDS[key].label}
+                </button>
+              ))}
+            </div>
           ))}
         </div>
       )}

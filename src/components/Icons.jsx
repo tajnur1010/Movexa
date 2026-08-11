@@ -41,6 +41,12 @@ export const IconChevronL = ({ size = 22 }) => (
   </svg>
 )
 
+export const IconChevronD = ({ size = 18 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" aria-hidden="true" {...S}>
+    <path d="M6 9l6 6 6-6" />
+  </svg>
+)
+
 export const IconInfo = ({ size = 20 }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" aria-hidden="true" {...S}>
     <circle cx="12" cy="12" r="9" />
