@@ -70,6 +70,15 @@ export default function DetailModal({ type, id, onClose }) {
     scrollToPlayer()
   }
 
+  // "Watch Now" on a series jumps straight into the first episode of the
+  // first real season (skips specials / season 0).
+  function watchTV() {
+    const first = (data?.seasons || [])
+      .filter(s => s.season_number > 0)
+      .sort((a, b) => a.season_number - b.season_number)[0]
+    playEpisode(first?.season_number || 1, 1)
+  }
+
   const title = data?.title || data?.name || ''
   const year = getYear(data?.release_date || data?.first_air_date)
   const rating = formatRating(data?.vote_average)
@@ -135,8 +144,8 @@ export default function DetailModal({ type, id, onClose }) {
                       </div>
                     )}
                     <div className={styles.actions}>
-                      <button className={styles.playBtn} onClick={isTV ? scrollToPlayer : playMovie}>
-                        <IconPlay size={18} /> {isTV ? 'Watch Episodes' : 'Play Now'}
+                      <button className={styles.playBtn} onClick={isTV ? watchTV : playMovie}>
+                        <IconPlay size={18} /> {isTV ? 'Watch Now' : 'Play Now'}
                       </button>
                       {trailer && (
                         <button className={styles.trailerBtn} onClick={() => setShowTrailer(s => !s)}>

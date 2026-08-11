@@ -4,8 +4,7 @@ import styles from './SeasonPicker.module.css'
 
 // Episode browser. Receives the show id + its seasons array (from tvDetails),
 // fetches episodes for the active season, and calls onPlay(season, episode).
-// Seasons and episodes are shown as compact numbered tiles; the active one is
-// highlighted with the site accent.
+// Seasons use the original pill tabs; episodes are compact numbered tiles.
 export default function SeasonPicker({ showId, seasons = [], activeKey, onPlay }) {
   const list = seasons.filter(s => s.season_number > 0)
   const initial = list[0]?.season_number || 1
@@ -31,26 +30,22 @@ export default function SeasonPicker({ showId, seasons = [], activeKey, onPlay }
 
   return (
     <div className={styles.wrap}>
-      {tabs.length > 1 && (
-        <div className={styles.row}>
-          <span className={styles.rowLabel}>Season</span>
-          <div className={styles.grid} role="tablist" aria-label="Seasons">
-            {tabs.map(s => (
-              <button
-                key={s.season_number}
-                role="tab"
-                aria-selected={activeSeason === s.season_number}
-                className={`${styles.box} ${activeSeason === s.season_number ? styles.boxActive : ''}`}
-                onClick={() => setActiveSeason(s.season_number)}
-                title={s.name || `Season ${s.season_number}`}
-              >
-                {s.season_number}
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
+      {/* Seasons — original pill tabs */}
+      <div className={styles.tabs} role="tablist" aria-label="Seasons">
+        {tabs.map(s => (
+          <button
+            key={s.season_number}
+            role="tab"
+            aria-selected={activeSeason === s.season_number}
+            className={`${styles.tab} ${activeSeason === s.season_number ? styles.tabActive : ''}`}
+            onClick={() => setActiveSeason(s.season_number)}
+          >
+            Season {s.season_number}
+          </button>
+        ))}
+      </div>
 
+      {/* Episodes — numbered tiles */}
       <div className={styles.row}>
         <span className={styles.rowLabel}>
           {episodes.length > 0 ? `1 – ${episodes.length}` : 'Episodes'}
