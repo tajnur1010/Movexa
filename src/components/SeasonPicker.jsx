@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import { api } from '../lib/api.js'
-import { IconPlay } from './Icons.jsx'
 import styles from './SeasonPicker.module.css'
 
 // Episode browser. Receives the show id + its seasons array (from tvDetails),
 // fetches episodes for the active season, and calls onPlay(season, episode).
+// Seasons and episodes are shown as compact numbered tiles; the active one is
+// highlighted with the site accent.
 export default function SeasonPicker({ showId, seasons = [], activeKey, onPlay }) {
   const list = seasons.filter(s => s.season_number > 0)
   const initial = list[0]?.season_number || 1
@@ -30,46 +31,57 @@ export default function SeasonPicker({ showId, seasons = [], activeKey, onPlay }
 
   return (
     <div className={styles.wrap}>
-      <div className={styles.tabs} role="tablist" aria-label="Seasons">
-        {tabs.map(s => (
-          <button
-            key={s.season_number}
-            role="tab"
-            aria-selected={activeSeason === s.season_number}
-            className={`${styles.tab} ${activeSeason === s.season_number ? styles.tabActive : ''}`}
-            onClick={() => setActiveSeason(s.season_number)}
-          >
-            Season {s.season_number}
-          </button>
-        ))}
-      </div>
-
-      {loading ? (
-        <div className={styles.epList}>
-          {Array.from({ length: 12 }).map((_, i) => <div key={i} className={styles.epSkel} />)}
-        </div>
-      ) : episodes.length > 0 ? (
-        <div className={styles.epList}>
-          {episodes.map(ep => {
-            const key = `S${activeSeason}E${ep.episode_number}`
-            const active = key === activeKey
-            return (
+      {tabs.length > 1 && (
+        <div className={styles.row}>
+          <span className={styles.rowLabel}>Season</span>
+          <div className={styles.grid} role="tablist" aria-label="Seasons">
+            {tabs.map(s => (
               <button
-                key={ep.episode_number}
-                className={`${styles.ep} ${active ? styles.epActive : ''}`}
-                onClick={() => onPlay?.(activeSeason, ep.episode_number)}
-                title={ep.name || `Episode ${ep.episode_number}`}
+                key={s.season_number}
+                role="tab"
+                aria-selected={activeSeason === s.season_number}
+                className={`${styles.box} ${activeSeason === s.season_number ? styles.boxActive : ''}`}
+                onClick={() => setActiveSeason(s.season_number)}
+                title={s.name || `Season ${s.season_number}`}
               >
-                <span className={styles.epNum}>{ep.episode_number}</span>
-                <span className={styles.epName}>{ep.name || `Episode ${ep.episode_number}`}</span>
-                <span className={styles.epPlay}><IconPlay size={13} /></span>
+                {s.season_number}
               </button>
-            )
-          })}
+            ))}
+          </div>
         </div>
-      ) : (
-        <p className={styles.noEps}>No episode data available for this season.</p>
       )}
+
+      <div className={styles.row}>
+        <span className={styles.rowLabel}>
+          {episodes.length > 0 ? `1 – ${episodes.length}` : 'Episodes'}
+        </span>
+
+        {loading ? (
+          <div className={styles.grid}>
+            {Array.from({ length: 12 }).map((_, i) => <div key={i} className={styles.boxSkel} />)}
+          </div>
+        ) : episodes.length > 0 ? (
+          <div className={styles.grid} role="list" aria-label="Episodes">
+            {episodes.map(ep => {
+              const key = `S${activeSeason}E${ep.episode_number}`
+              const active = key === activeKey
+              return (
+                <button
+                  key={ep.episode_number}
+                  role="listitem"
+                  className={`${styles.box} ${active ? styles.boxActive : ''}`}
+                  onClick={() => onPlay?.(activeSeason, ep.episode_number)}
+                  title={ep.name || `Episode ${ep.episode_number}`}
+                >
+                  {ep.episode_number}
+                </button>
+              )
+            })}
+          </div>
+        ) : (
+          <p className={styles.noEps}>No episode data available for this season.</p>
+        )}
+      </div>
     </div>
   )
 }
