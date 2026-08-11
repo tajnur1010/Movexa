@@ -46,7 +46,7 @@ export default function SeasonPicker({ showId, seasons = [], activeKey, onPlay }
 
       {loading ? (
         <div className={styles.epList}>
-          {Array.from({ length: 6 }).map((_, i) => <div key={i} className={styles.epSkel} />)}
+          {Array.from({ length: 12 }).map((_, i) => <div key={i} className={styles.epSkel} />)}
         </div>
       ) : episodes.length > 0 ? (
         <div className={styles.epList}>
@@ -60,14 +60,9 @@ export default function SeasonPicker({ showId, seasons = [], activeKey, onPlay }
                 onClick={() => onPlay?.(activeSeason, ep.episode_number)}
                 title={ep.name || `Episode ${ep.episode_number}`}
               >
-                <div className={styles.epThumb}>
-                  {ep.still_path
-                    ? <img src={`https://image.tmdb.org/t/p/w300${ep.still_path}`} alt="" loading="lazy" />
-                    : <div className={styles.epThumbFallback}><IconPlay size={16} /></div>}
-                  <span className={styles.epNumBadge}>{ep.episode_number}</span>
-                  <span className={styles.epPlay}><IconPlay size={16} /></span>
-                </div>
+                <span className={styles.epNum}>{ep.episode_number}</span>
                 <span className={styles.epName}>{ep.name || `Episode ${ep.episode_number}`}</span>
+                <span className={styles.epPlay}><IconPlay size={13} /></span>
               </button>
             )
           })}

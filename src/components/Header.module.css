@@ -161,4 +161,22 @@
     background: rgba(9, 10, 15, 0.96);
     backdrop-filter: blur(16px);
     border-bottom: 1px solid var(--border);
-    animation: fa
+    animation: fade 0.2s var(--ease);
+  }
+  .mLink {
+    text-align: left;
+    background: none;
+    border: none;
+    padding: 12px 10px;
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--text-muted);
+    border-radius: 8px;
+  }
+  .mLink:hover { background: var(--glass-hi); color: var(--text); }
+  .mLink.active { color: var(--accent); }
+}
+
+@media (max-width: 480px) {
+  .searchForm.searchOpen { width: min(240px, 52vw); }
+}

@@ -50,4 +50,31 @@ export default function Home({ onSelect }) {
     return () => { cancelled = true }
   }, [])
 
-  c
+  const order = ['trendingMovies', 'popularTV', 'anime', 'south', 'telugu', 'topRatedMovies', 'bollywood', 'bangla', 'korean', 'hollywood']
+
+  return (
+    <div className={styles.page}>
+      <Hero
+        items={heroLoading ? [] : hero}
+        onPlay={onSelect}
+        onInfo={onSelect}
+      />
+
+      <div className={styles.rows}>
+        {order.map(key => {
+          const row = rows[key]
+          return (
+            <Row
+              key={key}
+              title={row?.title || ' '}
+              eyebrow={row?.eyebrow}
+              items={row?.items || []}
+              loading={!row}
+              onSelect={onSelect}
+            />
+          )
+        })}
+      </div>
+    </div>
+  )
+}
