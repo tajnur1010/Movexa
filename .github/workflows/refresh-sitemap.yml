@@ -1,0 +1,52 @@
+name: Refresh sitemap
+
+# Why this exists:
+# The Movexa sitemap is generated at BUILD time by scripts/gen-sitemap.mjs
+# (the npm `postbuild` hook). The live site is always fresh because content is
+# fetched from TMDB at runtime — but the sitemap only changes when the site is
+# rebuilt. This workflow rebuilds on a schedule so newly popular / newly
+# released titles keep flowing into the sitemap Google reads.
+#
+# How it works: it pings a Vercel Deploy Hook (a POST URL). Vercel then runs a
+# fresh production build with the project's normal settings, which re-runs the
+# sitemap generator. No git commit, no code change needed.
+#
+# One-time setup (see chat for click-by-click):
+#   1. Vercel → Project → Settings → Git → Deploy Hooks → create one on `main`,
+#      copy the URL.
+#   2. GitHub repo → Settings → Secrets and variables → Actions → New repository
+#      secret named VERCEL_DEPLOY_HOOK, paste that URL.
+
+on:
+  schedule:
+    # Every day at 02:00 UTC (= 08:00 Asia/Dhaka). Change this line for a
+    # different cadence, e.g. '0 2 * * 1' for weekly on Mondays.
+    - cron: '0 2 * * *'
+  # Lets you trigger a rebuild by hand from the Actions tab any time.
+  workflow_dispatch: {}
+
+# Never let two refreshes overlap.
+concurrency:
+  group: refresh-sitemap
+  cancel-in-progress: false
+
+jobs:
+  redeploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Vercel deploy hook
+        env:
+          HOOK: ${{ secrets.VERCEL_DEPLOY_HOOK }}
+        run: |
+          if [ -z "$HOOK" ]; then
+            echo "::error::VERCEL_DEPLOY_HOOK secret is not set. Add it in repo Settings -> Secrets and variables -> Actions."
+            exit 1
+          fi
+          echo "Pinging Vercel deploy hook to rebuild + regenerate the sitemap..."
+          code=$(curl -sS -o /tmp/hook.out -w '%{http_code}' -X POST "$HOOK")
+          echo "HTTP $code"
+          cat /tmp/hook.out || true
+          case "$code" in
+            2*) echo "Redeploy triggered. Vercel will rebuild and refresh the sitemap." ;;
+            *)  echo "::error::Deploy hook returned HTTP $code"; exit 1 ;;
+          esac
