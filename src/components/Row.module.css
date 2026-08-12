@@ -26,6 +26,25 @@
   color: var(--text);
 }
 
+/* Row heading linking to its category browse page */
+.titleLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--text);
+  transition: color 0.2s var(--ease);
+}
+.titleLink:hover { color: var(--accent); }
+.titleLink:hover .title { color: var(--accent); }
+.titleArrow {
+  display: inline-flex;
+  color: var(--accent);
+  opacity: 0;
+  transform: translateX(-4px);
+  transition: opacity 0.2s var(--ease), transform 0.2s var(--ease);
+}
+.titleLink:hover .titleArrow { opacity: 1; transform: translateX(0); }
+
 .arrows { display: flex; gap: 8px; flex-shrink: 0; }
 .arrow {
   display: grid;

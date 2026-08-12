@@ -1,10 +1,11 @@
 import React, { useRef, useState, useEffect } from 'react'
 import { posterUrl, backdropUrl } from '../lib/api.js'
-import { routes, onNavClick } from '../lib/router.js'
+import { routes, onNavClick, navigate } from '../lib/router.js'
+import { WORLDS } from '../data/worlds.js'
 import { IconChevronL, IconChevronR, IconStar, IconPlay } from './Icons.jsx'
 import styles from './Row.module.css'
 
-export default function Row({ title, eyebrow, items = [], loading, onSelect, variant = 'poster' }) {
+export default function Row({ title, eyebrow, items = [], loading, onSelect, variant = 'poster', world }) {
   const scrollerRef = useRef(null)
   const [canL, setCanL] = useState(false)
   const [canR, setCanR] = useState(true)
@@ -31,7 +32,19 @@ export default function Row({ title, eyebrow, items = [], loading, onSelect, var
       <div className={styles.head}>
         <div>
           {eyebrow && <span className={styles.eyebrow}>{eyebrow}</span>}
-          <h2 className={styles.title}>{title}</h2>
+          {world && WORLDS[world] && !loading ? (
+            <a
+              className={styles.titleLink}
+              href={routes.world(world)}
+              onClick={(e) => onNavClick(e, () => navigate(routes.world(world)))}
+              aria-label={`Browse all ${WORLDS[world].label}`}
+            >
+              <h2 className={styles.title}>{title}</h2>
+              <span className={styles.titleArrow}><IconChevronR size={16} /></span>
+            </a>
+          ) : (
+            <h2 className={styles.title}>{title}</h2>
+          )}
         </div>
         <div className={styles.arrows}>
           <button className={styles.arrow} onClick={() => scrollBy(-1)} disabled={!canL} aria-label="Scroll left">

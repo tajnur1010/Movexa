@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import { api, normalize } from '../lib/api.js'
 import { WORLDS, resolveSort, SORT_OPTIONS } from '../data/worlds.js'
+import { navigate, routes, onNavClick } from '../lib/router.js'
 import MediaGrid from '../components/MediaGrid.jsx'
 import styles from './Browse.module.css'
 
@@ -96,6 +97,17 @@ export default function Browse({ world, onSelect }) {
   return (
     <div className={styles.page}>
       <header className={styles.hero}>
+        <nav className={styles.crumbs} aria-label="Breadcrumb">
+          <a
+            className={styles.crumb}
+            href={routes.home()}
+            onClick={(e) => onNavClick(e, () => navigate(routes.home()))}
+          >
+            Home
+          </a>
+          <span className={styles.crumbSep}>/</span>
+          <span className={styles.crumbCurrent}>{cfg.label}</span>
+        </nav>
         <span className={styles.eyebrow}>Browse</span>
         <h1 className={styles.title}>{cfg.label}</h1>
         <p className={styles.tagline}>{cfg.tagline}</p>

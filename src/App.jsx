@@ -1,5 +1,5 @@
 import React, { useRef, useEffect } from 'react'
-import { useRoute, navigate, routes } from './lib/router.js'
+import { useRoute, navigate, routes, onNavClick } from './lib/router.js'
 import Header from './components/Header.jsx'
 import DetailModal from './components/DetailModal.jsx'
 import Home from './pages/Home.jsx'
@@ -8,6 +8,15 @@ import Search from './pages/Search.jsx'
 import { WORLDS } from './data/worlds.js'
 import { setSeo, DEFAULT_SEO } from './lib/seo.js'
 import styles from './App.module.css'
+
+// Footer sitewide nav — every category world reachable in one click from any
+// page (keeps browse worlds out of orphan status and within crawl depth 1).
+// Keys must exist in WORLDS; labels come from there so anchors stay descriptive.
+const FOOT_GROUPS = [
+  { label: 'Browse', worlds: ['movies', 'series', 'anime'] },
+  { label: 'Indian Cinema', worlds: ['bollywood', 'south', 'telugu', 'bangla'] },
+  { label: 'International', worlds: ['hollywood', 'korean', 'chinese'] },
+]
 
 export default function App() {
   const route = useRoute()
@@ -74,6 +83,44 @@ export default function App() {
 
       <footer className={styles.footer}>
         <div className={styles.footInner}>
+          <nav className={styles.footNav} aria-label="Footer">
+            <div className={styles.footCol}>
+              <span className={styles.footColLabel}>Browse</span>
+              <a
+                className={styles.footNavLink}
+                href={routes.home()}
+                onClick={(e) => onNavClick(e, () => navigate(routes.home()))}
+              >
+                Home
+              </a>
+              {FOOT_GROUPS[0].worlds.map((key) => (
+                <a
+                  key={key}
+                  className={styles.footNavLink}
+                  href={routes.world(key)}
+                  onClick={(e) => onNavClick(e, () => navigate(routes.world(key)))}
+                >
+                  {WORLDS[key].label}
+                </a>
+              ))}
+            </div>
+            {FOOT_GROUPS.slice(1).map((group) => (
+              <div className={styles.footCol} key={group.label}>
+                <span className={styles.footColLabel}>{group.label}</span>
+                {group.worlds.map((key) => (
+                  <a
+                    key={key}
+                    className={styles.footNavLink}
+                    href={routes.world(key)}
+                    onClick={(e) => onNavClick(e, () => navigate(routes.world(key)))}
+                  >
+                    {WORLDS[key].label}
+                  </a>
+                ))}
+              </div>
+            ))}
+          </nav>
+
           <div className={styles.footBrand}>
             Move<span className={styles.footAccent}>xa</span>
           </div>

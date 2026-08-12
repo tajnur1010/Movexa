@@ -9,6 +9,23 @@
   margin-bottom: 1.8rem;
   padding-top: 0.5rem;
 }
+
+/* Breadcrumb (Home / Category) */
+.crumbs {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 7px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  margin-bottom: 12px;
+}
+.crumb { color: var(--text-muted); transition: color 0.2s var(--ease); }
+.crumb:hover { color: var(--accent); }
+.crumbSep { color: var(--text-dim); }
+.crumbCurrent { color: var(--text-dim); }
+
 .eyebrow {
   font-family: var(--font-mono);
   font-size: 11px;

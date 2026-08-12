@@ -109,6 +109,29 @@
 }
 
 .headMeta { min-width: 0; }
+
+/* Breadcrumb (Home / Movies|TV Series / Title) */
+.crumbs {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 7px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  margin-bottom: 10px;
+}
+.crumb { color: rgba(255,255,255,0.72); transition: color 0.2s var(--ease); }
+.crumb:hover { color: var(--accent); }
+.crumbSep { color: var(--text-dim); }
+.crumbCurrent {
+  color: var(--text-muted);
+  max-width: 46vw;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .kind {
   font-family: var(--font-mono);
   font-size: 10px;
@@ -235,6 +258,36 @@
   border-image: var(--accent-line) 1;
 }
 .overview { color: var(--text-muted); font-size: 15px; line-height: 1.75; max-width: 760px; }
+
+/* Explore — category/region browse links for this title */
+.explore {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+.exploreLabel {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-right: 2px;
+}
+.exploreLink {
+  font-size: 12.5px;
+  color: var(--text-muted);
+  padding: 5px 13px;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  background: var(--glass-hi);
+  transition: color 0.2s var(--ease), border-color 0.2s var(--ease), background 0.2s var(--ease);
+}
+.exploreLink:hover {
+  color: #fff;
+  border-color: rgba(255,138,61,0.5);
+  background: var(--accent-soft);
+}
 
 /* Cast */
 .castRow {

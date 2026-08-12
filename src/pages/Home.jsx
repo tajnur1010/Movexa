@@ -7,6 +7,21 @@ import styles from './Home.module.css'
 
 const mapList = (d, type) => (d?.results || []).map(x => normalize(x, type)).filter(Boolean)
 
+// Each home row heading links to the category browse page it represents.
+// topRatedMovies is intentionally omitted: it would point to /browse/movies,
+// which the "Trending Films" heading already links (avoids a duplicate link).
+const ROW_WORLD = {
+  trendingMovies: 'movies',
+  popularTV: 'series',
+  anime: 'anime',
+  south: 'south',
+  telugu: 'telugu',
+  bollywood: 'bollywood',
+  bangla: 'bangla',
+  korean: 'korean',
+  hollywood: 'hollywood',
+}
+
 export default function Home({ onSelect }) {
   const [hero, setHero] = useState([])
   const [rows, setRows] = useState({})
@@ -71,6 +86,7 @@ export default function Home({ onSelect }) {
               items={row?.items || []}
               loading={!row}
               onSelect={onSelect}
+              world={ROW_WORLD[key]}
             />
           )
         })}

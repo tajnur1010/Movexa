@@ -52,3 +52,36 @@
 
 .footLink { color: var(--accent); transition: opacity 0.2s var(--ease); }
 .footLink:hover { opacity: 0.75; text-decoration: underline; }
+
+/* Sitewide footer navigation */
+.footNav {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: clamp(1.5rem, 6vw, 4rem);
+  text-align: left;
+  padding-bottom: 2rem;
+  margin-bottom: 1.75rem;
+  border-bottom: 1px solid var(--border);
+}
+.footCol {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.footColLabel {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 0.15rem;
+}
+.footNavLink {
+  color: var(--text-muted);
+  font-size: 14px;
+  line-height: 1.5;
+  transition: color 0.2s var(--ease);
+}
+.footNavLink:hover { color: var(--accent); }
+
