@@ -52,7 +52,8 @@ export default function DetailModal({ type, id, onClose }) {
   }
 
   function playMovie() {
-    setPlay({ src: movieEmbedUrl(id), label: title })
+    // VidSrc movies resolve best by IMDb id; fall back to the TMDB id.
+    setPlay({ src: movieEmbedUrl(data?.imdb_id || id), label: title })
     setShowTrailer(false)
     scrollToPlayer()
   }

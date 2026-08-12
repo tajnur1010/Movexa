@@ -7,18 +7,9 @@ export const TMDB_KEY = '24b293c7f17afc27e9b7357dea0e7f8a' // get tmdb api key f
 
 // Streaming embed provider: VidSrc (no API key required).
 // VidSrc rotates domains sometimes — if playback stops working, swap
-// EMBED_BASE to a mirror (same URL shape): vidsrc.in · vidsrc.pm · vidsrc.net · vidsrc.to
-export const EMBED_BASE = 'https://vidsrc.xyz'
+// EMBED_BASE to a mirror (same URL shape): vidsrc.me · vidsrc.net · vidsrc.in · vidsrc.pm
+export const EMBED_BASE = 'https://vidsrcme.ru'
 export const EMBED_API_KEY = 'nx_2cad09f6e1cbe42cbfe00e7a36c8037f' // (unused with VidSrc; kept for revert)
-<iframe
-  src="https://vidsrcme.ru/embed/movie/tt1300854"
-  width="100%"
-  height="560"
-  frameborder="0"
-  allowfullscreen>
-</iframe>
-const imdbId = item.imdb_id;
-const videoUrl = `https://vidsrcme.ru/embed/movie/${imdbId}`;
 
 
 // Image CDNs (multiple sizes for crisp cards, rows and hero backdrops)
@@ -81,18 +72,17 @@ export const api = {
 }
 
 // ── Embed URLs (VidSrc) ───────────────────────────────────────
-// VidSrc builds a player straight from a TMDB id. No API key needed.
-//   Movie:   https://vidsrc.xyz/embed/movie?tmdb={id}
-//   TV ep:   https://vidsrc.xyz/embed/tv?tmdb={id}&season={s}&episode={e}
-// Optional: append `&ds_lang=hi` to default the subtitle language to Hindi.
-// If a mirror uses the path style instead, it's: /embed/movie/{id} and
-// /embed/tv/{id}/{season}/{episode} — change only these two functions.
-export function movieEmbedUrl(tmdbId) {
-  return `${EMBED_BASE}/embed/movie?tmdb=${tmdbId}`
+// VidSrc builds a player from an id in the path. No API key needed.
+// Movies resolve by IMDb id (tt…); TV uses the TMDB id. VidSrc auto-detects
+// numeric (TMDB) vs tt-prefixed (IMDb), so a numeric fallback also works.
+//   Movie: https://vidsrcme.ru/embed/movie/tt1300854
+//   TV ep: https://vidsrcme.ru/embed/tv/1399/1/1   (tmdbId/season/episode)
+export function movieEmbedUrl(id) {
+  return `${EMBED_BASE}/embed/movie/${id}`
 }
 
 export function tvEmbedUrl(tmdbId, season, episode) {
-  return `${EMBED_BASE}/embed/tv?tmdb=${tmdbId}&season=${season}&episode=${episode}`
+  return `${EMBED_BASE}/embed/tv/${tmdbId}/${season}/${episode}`
 }
 
 // ── Download URLs ─────────────────────────────────────────────
