@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import styles from './Player.module.css'
 
-// Cinematic embed frame. `src` is the codespecters embed URL.
+// Cinematic embed frame. `src` is the embed provider (VidSrc) URL.
 export default function Player({ src, label }) {
   const [loaded, setLoaded] = useState(false)
   if (!src) return null

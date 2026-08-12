@@ -1,12 +1,15 @@
 // ─────────────────────────────────────────────────────────────
 // Movexa API layer
-// TMDB for metadata + artwork, codespecters embed for streaming.
-// NOTE: keys and base URLs are intentionally unchanged.
+// TMDB for metadata + artwork, VidSrc embed for streaming.
 // ─────────────────────────────────────────────────────────────
 
 export const TMDB_KEY = '24b293c7f17afc27e9b7357dea0e7f8a' // get tmdb api key free at https://www.themoviedb.org/settings/api
-export const EMBED_API_KEY = 'nx_2cad09f6e1cbe42cbfe00e7a36c8037f' // get movie api key at https://api.codespecters.com/api
-export const EMBED_BASE = 'https://api.codespecters.com'
+
+// Streaming embed provider: VidSrc (no API key required).
+// VidSrc rotates domains sometimes — if playback stops working, swap
+// EMBED_BASE to a mirror (same URL shape): vidsrc.in · vidsrc.pm · vidsrc.net · vidsrc.to
+export const EMBED_BASE = 'https://vidsrc.xyz'
+export const EMBED_API_KEY = 'nx_2cad09f6e1cbe42cbfe00e7a36c8037f' // (unused with VidSrc; kept for revert)
 <iframe
   src="https://vidsrcme.ru/embed/movie/tt1300854"
   width="100%"
@@ -77,20 +80,19 @@ export const api = {
   seasonDetails: (id, season) => tmdbFetch(`/tv/${id}/season/${season}`),
 }
 
-// ── Embed URLs (unchanged endpoints) ──────────────────────────
-// Dual-audio flag: providers that host multi-audio sources expose the extra
-// tracks in the player's own audio menu. We request them via query flags.
-// NOTE: the exact flag name is provider-specific and UNVERIFIED here (docs
-// were unreachable). If dual audio doesn't appear, adjust ONLY this constant —
-// unknown params are ignored by the provider, so this is safe to ship.
-const AUDIO_PARAMS = 'multiLang=true&dualAudio=true'
-
+// ── Embed URLs (VidSrc) ───────────────────────────────────────
+// VidSrc builds a player straight from a TMDB id. No API key needed.
+//   Movie:   https://vidsrc.xyz/embed/movie?tmdb={id}
+//   TV ep:   https://vidsrc.xyz/embed/tv?tmdb={id}&season={s}&episode={e}
+// Optional: append `&ds_lang=hi` to default the subtitle language to Hindi.
+// If a mirror uses the path style instead, it's: /embed/movie/{id} and
+// /embed/tv/{id}/{season}/{episode} — change only these two functions.
 export function movieEmbedUrl(tmdbId) {
-  return `${EMBED_BASE}/embed/movie/${tmdbId}?apikey=${EMBED_API_KEY}&${AUDIO_PARAMS}`
+  return `${EMBED_BASE}/embed/movie?tmdb=${tmdbId}`
 }
 
 export function tvEmbedUrl(tmdbId, season, episode) {
-  return `${EMBED_BASE}/embed/tv/${tmdbId}/${season}/${episode}?apikey=${EMBED_API_KEY}&${AUDIO_PARAMS}`
+  return `${EMBED_BASE}/embed/tv?tmdb=${tmdbId}&season=${season}&episode=${episode}`
 }
 
 // ── Download URLs ─────────────────────────────────────────────
