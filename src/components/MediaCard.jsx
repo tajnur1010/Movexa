@@ -18,7 +18,7 @@ export default function MediaCard({ item, onClick, selected }) {
     >
       <div className={styles.poster}>
         {poster ? (
-          <img src={poster} alt="" loading="lazy" />
+          <img src={poster} alt={`${item.title} poster`} loading="lazy" decoding="async" />
         ) : (
           <div className={styles.noPoster}>
             <span>{item.title?.slice(0, 2).toUpperCase()}</span>

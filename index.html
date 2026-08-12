@@ -62,6 +62,10 @@
     </script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <!-- Warm up the TMDB origins: the LCP element is a TMDB backdrop image, and
+         the first data call hits the API — preconnecting shaves the handshake. -->
+    <link rel="preconnect" href="https://image.tmdb.org" />
+    <link rel="preconnect" href="https://api.themoviedb.org" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap"
       rel="stylesheet"

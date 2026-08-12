@@ -76,7 +76,7 @@ export default function Row({ title, eyebrow, items = [], loading, onSelect, var
                 >
                   <div className={styles.thumb}>
                     {img
-                      ? <img src={img} alt="" loading="lazy" />
+                      ? <img src={img} alt={item.title} loading="lazy" decoding="async" />
                       : <div className={styles.noImg}>{item.title?.slice(0, 2).toUpperCase()}</div>}
                     <span className={styles.play}><IconPlay size={15} /></span>
                     {item.rating && item.rating !== '0.0' && (

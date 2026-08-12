@@ -191,7 +191,7 @@ export default function DetailModal({ type, id, onClose }) {
                 )}
                 <div className={styles.headInner}>
                   {posterUrl(data.poster_path, 'md') && (
-                    <img className={styles.poster} src={posterUrl(data.poster_path, 'lg')} alt="" />
+                    <img className={styles.poster} src={posterUrl(data.poster_path, 'lg')} alt={`${title} poster`} decoding="async" />
                   )}
                   <div className={styles.headMeta}>
                     <nav className={styles.crumbs} aria-label="Breadcrumb">
@@ -294,7 +294,7 @@ export default function DetailModal({ type, id, onClose }) {
                         <div key={c.id} className={styles.castCard}>
                           <div className={styles.castImg}>
                             {profileUrl(c.profile_path)
-                              ? <img src={profileUrl(c.profile_path)} alt="" loading="lazy" />
+                              ? <img src={profileUrl(c.profile_path)} alt={c.name} loading="lazy" decoding="async" />
                               : <div className={styles.castFallback}>{c.name?.slice(0, 1)}</div>}
                           </div>
                           <span className={styles.castName}>{c.name}</span>
@@ -318,7 +318,7 @@ export default function DetailModal({ type, id, onClose }) {
                           title={s.title}
                         >
                           <div className={styles.simPoster}>
-                            <img src={posterUrl(s.poster, 'md')} alt="" loading="lazy" />
+                            <img src={posterUrl(s.poster, 'md')} alt={`${s.title} poster`} loading="lazy" decoding="async" />
                             {s.rating && s.rating !== '0.0' && (
                               <span className={styles.simRating}><IconStar size={10} /> {s.rating}</span>
                             )}

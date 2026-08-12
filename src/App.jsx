@@ -125,11 +125,15 @@ export default function App() {
             Move<span className={styles.footAccent}>xa</span>
           </div>
           <p className={styles.footText}>
-            Metadata &amp; artwork by TMDB. Streams provided by third-party embed sources.
-            Movexa does not host any files.
+            Movexa is a discovery platform for film and television. All titles, artwork and
+            metadata are provided by TMDB, and playback is delivered by independent third-party
+            services. Movexa does not host, upload or store any media files.
+          </p>
+          <p className={styles.footNote}>
+            This product uses the TMDB API but is not endorsed or certified by TMDB.
           </p>
           <p className={styles.footCopy}>
-            &copy; {new Date().getFullYear()} Movexa · Widescreen streaming, democratized
+            &copy; {new Date().getFullYear()} Movexa. All rights reserved.
           </p>
         </div>
       </footer>
