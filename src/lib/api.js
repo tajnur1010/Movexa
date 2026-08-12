@@ -7,7 +7,15 @@
 export const TMDB_KEY = '24b293c7f17afc27e9b7357dea0e7f8a' // get tmdb api key free at https://www.themoviedb.org/settings/api
 export const EMBED_API_KEY = 'nx_2cad09f6e1cbe42cbfe00e7a36c8037f' // get movie api key at https://api.codespecters.com/api
 export const EMBED_BASE = 'https://api.codespecters.com'
-
+<iframe
+  src="https://vidsrcme.ru/embed/movie/tt1300854"
+  width="100%"
+  height="560"
+  frameborder="0"
+  allowfullscreen>
+</iframe>
+const imdbId = item.imdb_id;
+const videoUrl = `https://vidsrcme.ru/embed/movie/${imdbId}`;
 
 
 // Image CDNs (multiple sizes for crisp cards, rows and hero backdrops)
