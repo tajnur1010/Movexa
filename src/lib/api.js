@@ -74,9 +74,9 @@ export const api = {
 // ── Embed URLs (multi-server with fallback) ───────────────────
 // Three independent providers. If one has no source / is down, the user can
 // switch servers in the player. None require an API key.
-//   VidSrc  — movie by IMDb id (falls back to TMDB), TV by TMDB id
-//   VidLink — TMDB id for both
-//   embed.su — TMDB id for both
+//   VidSrc    — movie by IMDb id (falls back to TMDB), TV by TMDB id
+//   VidLink   — TMDB id for both
+//   VidSrc.cc — TMDB id for both
 // If any provider rotates its domain, change its URL in BOTH helpers below.
 
 // Build the list of movie sources. `imdbId` is optional but preferred for VidSrc.
@@ -84,7 +84,7 @@ export function movieServers(tmdbId, imdbId) {
   return [
     { id: 'vidsrc', label: 'Server 1', src: `https://vidsrcme.ru/embed/movie/${imdbId || tmdbId}` },
     { id: 'vidlink', label: 'Server 2', src: `https://vidlink.pro/movie/${tmdbId}` },
-    { id: 'embedsu', label: 'Server 3', src: `https://embed.su/embed/movie/${tmdbId}` },
+    { id: 'vidsrccc', label: 'Server 3', src: `https://vidsrc.cc/v2/embed/movie/${tmdbId}` },
   ]
 }
 
@@ -92,7 +92,7 @@ export function tvServers(tmdbId, season, episode) {
   return [
     { id: 'vidsrc', label: 'Server 1', src: `https://vidsrcme.ru/embed/tv/${tmdbId}/${season}/${episode}` },
     { id: 'vidlink', label: 'Server 2', src: `https://vidlink.pro/tv/${tmdbId}/${season}/${episode}` },
-    { id: 'embedsu', label: 'Server 3', src: `https://embed.su/embed/tv/${tmdbId}/${season}/${episode}` },
+    { id: 'vidsrccc', label: 'Server 3', src: `https://vidsrc.cc/v2/embed/tv/${tmdbId}/${season}/${episode}` },
   ]
 }
 
