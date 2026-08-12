@@ -150,6 +150,34 @@ export function runtimeText(mins) {
   return h ? `${h}h ${m}m` : `${m}m`
 }
 
+// ── Audio / language label ────────────────────────────────────
+// Derived from TMDB's language metadata (a title's original spoken
+// languages) — NOT a guarantee of what a given embed server streams.
+const LANG_NAMES = {
+  hi: 'Hindi', en: 'English', ja: 'Japanese', ko: 'Korean', zh: 'Chinese',
+  ta: 'Tamil', te: 'Telugu', bn: 'Bengali', ml: 'Malayalam', kn: 'Kannada',
+  ur: 'Urdu', pa: 'Punjabi', es: 'Spanish', fr: 'French', de: 'German',
+  it: 'Italian', ru: 'Russian', tr: 'Turkish', th: 'Thai',
+}
+
+export function langName(code) {
+  return LANG_NAMES[code] || (code ? code.toUpperCase() : '')
+}
+
+// Build a viewer-facing audio badge, e.g. "Dual Audio · Hindi + English",
+// "Hindi", "English", or the original language name.
+export function audioLabel(data) {
+  if (!data) return null
+  const codes = new Set((data.spoken_languages || []).map(l => l.iso_639_1).filter(Boolean))
+  if (data.original_language) codes.add(data.original_language)
+  const hasHi = codes.has('hi')
+  const hasEn = codes.has('en')
+  if (hasHi && hasEn) return 'Dual Audio · Hindi + English'
+  if (hasHi) return 'Hindi'
+  if (hasEn) return 'English'
+  return langName(data.original_language) || null
+}
+
 // Normalise a movie or TV record into a shared shape the UI can rely on.
 export function normalize(item, fallbackType) {
   if (!item) return null

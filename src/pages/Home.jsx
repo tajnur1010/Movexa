@@ -30,11 +30,11 @@ export default function Home({ onSelect }) {
       ['popularTV', 'Popular Series', 'Binge-worthy', api.popularTV(), 'tv'],
       ['topRatedMovies', 'Critically Acclaimed', 'Top Rated', api.topRatedMovies(), 'movie'],
       ['anime', 'Anime Spotlight', 'From Japan', api.discoverTV({ with_genres: String(ANIME_GENRE), with_original_language: 'ja', sort_by: 'popularity.desc' }), 'tv'],
-      ['south', 'South Indian Hits', 'தமிழ்', api.discoverMovies({ with_original_language: 'ta', sort_by: 'popularity.desc', 'vote_count.gte': 50 }), 'movie'],
-      ['telugu', 'Telugu Blockbusters', 'తెలుగు', api.discoverMovies({ with_original_language: 'te', sort_by: 'popularity.desc', 'vote_count.gte': 40 }), 'movie'],
-      ['bollywood', 'Bollywood Hits', 'हिन्दी', api.discoverMovies({ with_original_language: 'hi', sort_by: 'popularity.desc' }), 'movie'],
-      ['bangla', 'Bengali Cinema', 'বাংলা', api.discoverMovies({ with_original_language: 'bn', sort_by: 'popularity.desc', 'vote_count.gte': 10 }), 'movie'],
-      ['korean', 'Korean Wave', '한국', api.discoverTV({ with_original_language: 'ko', sort_by: 'popularity.desc', 'vote_count.gte': 30 }), 'tv'],
+      ['south', 'South Indian Hits', 'Tamil', api.discoverMovies({ with_original_language: 'ta', sort_by: 'popularity.desc', 'vote_count.gte': 50 }), 'movie'],
+      ['telugu', 'Telugu Blockbusters', 'Tollywood', api.discoverMovies({ with_original_language: 'te', sort_by: 'popularity.desc', 'vote_count.gte': 40 }), 'movie'],
+      ['bollywood', 'Bollywood Hits', 'Hindi', api.discoverMovies({ with_original_language: 'hi', sort_by: 'popularity.desc' }), 'movie'],
+      ['bangla', 'Bengali Cinema', 'Bengali', api.discoverMovies({ with_original_language: 'bn', sort_by: 'popularity.desc', 'vote_count.gte': 10 }), 'movie'],
+      ['korean', 'Korean Wave', 'Korean', api.discoverTV({ with_original_language: 'ko', sort_by: 'popularity.desc', 'vote_count.gte': 30 }), 'tv'],
       ['hollywood', 'Hollywood Blockbusters', 'English', api.discoverMovies({ with_original_language: 'en', sort_by: 'popularity.desc', 'vote_count.gte': 300 }), 'movie'],
     ]
 
