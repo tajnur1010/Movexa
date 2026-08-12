@@ -1,5 +1,5 @@
 import React, { useRef, useEffect } from 'react'
-import { useRoute, navigate, routes, onNavClick } from './lib/router.js'
+import { useRoute, navigate, routes, onNavClick, canCloseToApp } from './lib/router.js'
 import Header from './components/Header.jsx'
 import DetailModal from './components/DetailModal.jsx'
 import Home from './pages/Home.jsx'
@@ -144,10 +144,13 @@ export default function App() {
           type={route.params.type}
           id={route.params.id}
           onClose={() => {
-            // Prefer going back so the previous page/scroll is restored;
-            // fall back to home if there's no history entry.
-            if (window.history.length > 1) window.history.back()
-            else navigate(routes.home())
+            // If the visitor reached this title from within the app, step back
+            // so their previous page + scroll is restored. If they DEEP-LINKED
+            // straight to /movie/:id (Google result, shared link, new tab),
+            // there is no in-app page behind it — going back would leave the
+            // site, so close to Home instead (replace = no dangling modal entry).
+            if (canCloseToApp()) window.history.back()
+            else navigate(routes.home(), { replace: true })
           }}
         />
       )}

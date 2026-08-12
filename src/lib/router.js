@@ -55,13 +55,41 @@ export function useRoute() {
 }
 
 // Navigation helpers -----------------------------------------------------
-export function navigate(path) {
+
+// Every history entry carries a monotonic in-app depth (__mvx). The entry the
+// visitor LANDS on — including a deep link opened straight from Google, a
+// shared link or a pasted /movie/:id URL — is depth 0. Pushing a new in-app
+// route bumps the depth. This lets modal-close tell "step back to a real in-app
+// page" apart from "leave the site entirely", which history.length cannot:
+// history.length counts the external referrer (e.g. Google) too, so relying on
+// it made closing a deep-linked detail modal kick the user off the site.
+function historyIndex() {
+  const s = window.history.state
+  return s && typeof s.__mvx === 'number' ? s.__mvx : 0
+}
+
+// Stamp the landing entry so its depth is always a real number, not null.
+function ensureHistoryIndex() {
+  if (typeof window === 'undefined') return
+  const s = window.history.state
+  if (!s || typeof s.__mvx !== 'number') {
+    window.history.replaceState({ ...(s || {}), __mvx: 0 }, '')
+  }
+}
+ensureHistoryIndex()
+
+export function navigate(path, { replace = false } = {}) {
   const target = path.startsWith('/') ? path : `/${path}`
   if (currentPath() === target) {
     // Force listeners to re-run even if the path is identical.
     window.dispatchEvent(new PopStateEvent('popstate'))
+  } else if (replace) {
+    // Replace keeps the current depth — used to close a deep-linked modal to
+    // Home without leaving a dangling entry behind.
+    window.history.replaceState({ ...(window.history.state || {}), __mvx: historyIndex() }, '', target)
+    window.dispatchEvent(new PopStateEvent('popstate'))
   } else {
-    window.history.pushState({}, '', target)
+    window.history.pushState({ __mvx: historyIndex() + 1 }, '', target)
     // pushState doesn't emit popstate; nudge our listeners so the view updates.
     window.dispatchEvent(new PopStateEvent('popstate'))
   }
@@ -74,6 +102,13 @@ export function navigate(path) {
   if (!/^\/(movie|tv)\/\d/.test(target)) {
     window.scrollTo(0, 0)
   }
+}
+
+// True when there's a real in-app page to step back to (i.e. the current entry
+// is NOT the one the visitor first landed on). The detail modal uses this so a
+// deep-linked /movie/:id closes to Home instead of exiting the site.
+export function canCloseToApp() {
+  return historyIndex() > 0
 }
 
 // Intercept an in-app anchor click so it navigates via the History API,
