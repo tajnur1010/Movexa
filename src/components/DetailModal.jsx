@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import {
-  api, backdropUrl, posterUrl, profileUrl, movieEmbedUrl, tvEmbedUrl,
+  api, backdropUrl, posterUrl, profileUrl, movieServers, tvServers,
   formatRating, getYear, runtimeText, pickTrailer, normalize,
 } from '../lib/api.js'
 import { navigate, routes } from '../lib/router.js'
@@ -52,15 +52,15 @@ export default function DetailModal({ type, id, onClose }) {
   }
 
   function playMovie() {
-    // VidSrc movies resolve best by IMDb id; fall back to the TMDB id.
-    setPlay({ src: movieEmbedUrl(data?.imdb_id || id), label: title })
+    // VidSrc prefers IMDb id; other servers use the TMDB id.
+    setPlay({ servers: movieServers(id, data?.imdb_id), label: title })
     setShowTrailer(false)
     scrollToPlayer()
   }
 
   function playEpisode(season, episode) {
     setPlay({
-      src: tvEmbedUrl(id, season, episode),
+      servers: tvServers(id, season, episode),
       label: `${title} · S${season} E${episode}`,
       epKey: `S${season}E${episode}`,
       season,
@@ -167,7 +167,7 @@ export default function DetailModal({ type, id, onClose }) {
                 {play && (
                   <section className={styles.section} ref={playRef}>
                     <h2 className={styles.h2}>Now Playing</h2>
-                    <Player src={play.src} label={play.label} />
+                    <Player servers={play.servers} label={play.label} />
                   </section>
                 )}
 

@@ -71,18 +71,38 @@ export const api = {
   seasonDetails: (id, season) => tmdbFetch(`/tv/${id}/season/${season}`),
 }
 
-// ── Embed URLs (VidSrc) ───────────────────────────────────────
-// VidSrc builds a player from an id in the path. No API key needed.
-// Movies resolve by IMDb id (tt…); TV uses the TMDB id. VidSrc auto-detects
-// numeric (TMDB) vs tt-prefixed (IMDb), so a numeric fallback also works.
-//   Movie: https://vidsrcme.ru/embed/movie/tt1300854
-//   TV ep: https://vidsrcme.ru/embed/tv/1399/1/1   (tmdbId/season/episode)
+// ── Embed URLs (multi-server with fallback) ───────────────────
+// Three independent providers. If one has no source / is down, the user can
+// switch servers in the player. None require an API key.
+//   VidSrc  — movie by IMDb id (falls back to TMDB), TV by TMDB id
+//   VidLink — TMDB id for both
+//   embed.su — TMDB id for both
+// If any provider rotates its domain, change its URL in BOTH helpers below.
+
+// Build the list of movie sources. `imdbId` is optional but preferred for VidSrc.
+export function movieServers(tmdbId, imdbId) {
+  return [
+    { id: 'vidsrc', label: 'Server 1', src: `https://vidsrcme.ru/embed/movie/${imdbId || tmdbId}` },
+    { id: 'vidlink', label: 'Server 2', src: `https://vidlink.pro/movie/${tmdbId}` },
+    { id: 'embedsu', label: 'Server 3', src: `https://embed.su/embed/movie/${tmdbId}` },
+  ]
+}
+
+export function tvServers(tmdbId, season, episode) {
+  return [
+    { id: 'vidsrc', label: 'Server 1', src: `https://vidsrcme.ru/embed/tv/${tmdbId}/${season}/${episode}` },
+    { id: 'vidlink', label: 'Server 2', src: `https://vidlink.pro/tv/${tmdbId}/${season}/${episode}` },
+    { id: 'embedsu', label: 'Server 3', src: `https://embed.su/embed/tv/${tmdbId}/${season}/${episode}` },
+  ]
+}
+
+// Back-compat single-URL helpers (default = VidSrc / Server 1).
 export function movieEmbedUrl(id) {
-  return `${EMBED_BASE}/embed/movie/${id}`
+  return `https://vidsrcme.ru/embed/movie/${id}`
 }
 
 export function tvEmbedUrl(tmdbId, season, episode) {
-  return `${EMBED_BASE}/embed/tv/${tmdbId}/${season}/${episode}`
+  return `https://vidsrcme.ru/embed/tv/${tmdbId}/${season}/${episode}`
 }
 
 // ── Download URLs ─────────────────────────────────────────────
