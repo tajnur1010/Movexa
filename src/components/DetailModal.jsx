@@ -6,7 +6,8 @@ import {
 import { navigate, routes, onNavClick } from '../lib/router.js'
 import { setSeo, setJsonLd, removeJsonLd } from '../lib/seo.js'
 import { WORLDS } from '../data/worlds.js'
-import { IconPlay, IconClose, IconStar } from './Icons.jsx'
+import { loadDownloads, getMovieDownload, getEpisodeDownload } from '../downloads/index.js'
+import { IconPlay, IconClose, IconStar, IconDownload } from './Icons.jsx'
 import Player from './Player.jsx'
 import SeasonPicker from './SeasonPicker.jsx'
 import styles from './DetailModal.module.css'
@@ -35,6 +36,7 @@ export default function DetailModal({ type, id, onClose }) {
   const [error, setError] = useState(false)
   const [play, setPlay] = useState(null) // { src, label, epKey }
   const [showTrailer, setShowTrailer] = useState(false)
+  const [dlMap, setDlMap] = useState(null) // Google-Sheet download links (or null while loading)
   const scrollRef = useRef(null)
   const playRef = useRef(null)
 
@@ -45,6 +47,14 @@ export default function DetailModal({ type, id, onClose }) {
     const prev = document.body.style.overflow
     document.body.style.overflow = 'hidden'
     return () => { document.body.style.overflow = prev }
+  }, [])
+
+  // Load the optional download-links map once (from the published Google Sheet
+  // configured in src/downloads/settings.js). Safe no-op when no URL is set.
+  useEffect(() => {
+    let cancelled = false
+    loadDownloads().then((m) => { if (!cancelled) setDlMap(m) })
+    return () => { cancelled = true }
   }, [])
 
   // Close on Escape
@@ -156,6 +166,12 @@ export default function DetailModal({ type, id, onClose }) {
   const backdrop = backdropUrl(data?.backdrop_path, 'lg')
   // Browse worlds this title links back to (breadcrumb parent + Explore links).
   const related = data ? relatedWorlds(type, data) : []
+  // Optional Google-Drive download links — only rendered when one exists for
+  // this exact movie, or this exact TV episode that's currently playing.
+  const movieDownload = !isTV && dlMap ? getMovieDownload(dlMap, id) : null
+  const episodeDownload = isTV && play && dlMap
+    ? getEpisodeDownload(dlMap, id, play.season, play.episode)
+    : null
 
   return (
     <div className={styles.overlay} onMouseDown={(e) => { if (e.target === e.currentTarget) onClose() }}>
@@ -237,6 +253,16 @@ export default function DetailModal({ type, id, onClose }) {
                           {showTrailer ? 'Hide Trailer' : 'Watch Trailer'}
                         </button>
                       )}
+                      {movieDownload && (
+                        <a
+                          className={styles.downloadBtn}
+                          href={movieDownload}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          <IconDownload size={18} /> Download
+                        </a>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -269,7 +295,19 @@ export default function DetailModal({ type, id, onClose }) {
 
                 {play && (
                   <section className={styles.section} ref={playRef}>
-                    <h2 className={styles.h2}>Now Playing</h2>
+                    <div className={styles.nowHead}>
+                      <h2 className={styles.h2}>Now Playing</h2>
+                      {episodeDownload && (
+                        <a
+                          className={styles.downloadBtnSm}
+                          href={episodeDownload}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          <IconDownload size={16} /> Download
+                        </a>
+                      )}
+                    </div>
                     <Player servers={play.servers} label={play.label} />
                   </section>
                 )}
