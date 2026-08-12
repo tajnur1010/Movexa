@@ -13,6 +13,12 @@
 //       ER POR Sheet-e link add/change korle rebuild lagbe NA —
 //       kichukkhon (Google-r cache, ~2-5 min) por nijei live hobe.
 //
+export const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRpO_xIRIG7Zwd0PdZNI1nFyq8lxmXuBKTqjl3px7h2r--gmu-LxksBT7FLSX6KTmOzhgzvl9gdmDds/pub?output=csv'
+
+
+
+
+
 //  Column mane / meaning:
 //    type    -> "movie"  othoba  "tv"
 //    id      -> TMDB id. (URL-e /movie/969681 hole  id = 969681)
