@@ -89,9 +89,13 @@ src/
 ```
 
 ## Deploy (public web)
-The production build in `dist/` is fully static, so it hosts anywhere:
-- **Netlify / Vercel / Cloudflare Pages / GitHub Pages** — connect the repo (or drag-and-drop the `dist/` folder). Build command `npm run build`, publish directory `dist`.
-- Because routing is hash-based (`#/...`), no server rewrite rules are needed.
+The production build in `dist/` is static, so it hosts anywhere:
+- **Vercel** (canonical): `vercel.json` supplies the SPA rewrite so deep links like `/movie/27205` resolve on refresh. Build command `npm run build`, publish directory `dist`.
+- **Other hosts** (Netlify / Cloudflare Pages / GitHub Pages): connect the repo or drop the `dist/` folder, and add an equivalent SPA fallback so every path serves `index.html`.
+- Clean History-API routes need that fallback — without it, refreshing a non-root URL 404s.
+
+### SEO sitemap
+`npm run build` runs a `postbuild` step (`scripts/gen-sitemap.mjs`) that pulls the site's popular + regional titles from TMDB and writes a sitemap index at `/sitemap.xml`, with `sitemap-pages`, `sitemap-movie` and `sitemap-tv` children. It reuses the app's own TMDB key and the category filters in `src/data/worlds.js`, and fails safe: any TMDB error leaves the static `public/sitemap.xml` fallback in place rather than breaking the deploy. Run it alone with `npm run sitemap` (after a build). Point it at a new domain with the `SITE_ORIGIN` env var.
 
 ## Notes
 Movexa stores no video files. Metadata and artwork come from TMDB; playback is served
