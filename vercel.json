@@ -3,6 +3,8 @@
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
   "rewrites": [
+    { "source": "/movie/:id(\\d+)", "destination": "/api/meta?type=movie&id=:id" },
+    { "source": "/tv/:id(\\d+)", "destination": "/api/meta?type=tv&id=:id" },
     { "source": "/(.*)", "destination": "/index.html" }
   ]
 }

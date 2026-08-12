@@ -60,6 +60,23 @@ URLs are redirected to their clean equivalents on load:
 /tv/94997                TV detail (modal over the current page)
 ```
 
+## SEO
+Three layers, no framework/SSR:
+
+- **Client-side per-view meta** (`src/lib/seo.js`) — every view updates its own
+  title, description, canonical + `og:url`, and detail pages add a `Movie`/
+  `TVSeries` JSON-LD block. Good for Googlebot (it runs JS).
+- **Server-side per-title meta** (`api/meta.js`, Vercel Edge Function) — `vercel.json`
+  rewrites `/movie/:id` and `/tv/:id` to it. It fetches TMDB and rewrites the
+  `index.html` shell's title/description/canonical/OG (image = poster/backdrop)/
+  Twitter tags + JSON-LD *before* sending, so JS-less scrapers (Facebook,
+  WhatsApp, X, Telegram) get a correct per-title link preview. Falls back to the
+  untouched shell on any failure.
+- **Dynamic sitemap** (`scripts/gen-sitemap.mjs`, runs on the `postbuild` hook) —
+  pulls popular/top-rated/trending + every category world from TMDB and writes a
+  sitemap index (`sitemap.xml`) with per-type title sitemaps into `dist/`. Run
+  it standalone with `npm run sitemap`. Static `public/sitemap.xml` is the fallback.
+
 ## Project structure
 
 ```
