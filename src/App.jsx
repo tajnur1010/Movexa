@@ -1,4 +1,4 @@
-import React, { useRef } from 'react'
+import React, { useRef, useEffect } from 'react'
 import { useHashRoute, navigate, routes } from './lib/router.js'
 import Header from './components/Header.jsx'
 import DetailModal from './components/DetailModal.jsx'
@@ -6,6 +6,7 @@ import Home from './pages/Home.jsx'
 import Browse from './pages/Browse.jsx'
 import Search from './pages/Search.jsx'
 import { WORLDS } from './data/worlds.js'
+import { setSeo, DEFAULT_SEO } from './lib/seo.js'
 import styles from './App.module.css'
 
 export default function App() {
@@ -18,6 +19,30 @@ export default function App() {
   const bg = route.name === 'title' ? bgRef.current : route
 
   const showModal = route.name === 'title' && route.params.id
+
+  // Keep the document head in sync with the active view. Detail (title) pages
+  // are enriched further by DetailModal once TMDB data loads; here we set a
+  // sensible default so the tab/description is never stale between views.
+  useEffect(() => {
+    if (route.name === 'world') {
+      const w = WORLDS[route.params.world] || WORLDS.movies
+      setSeo({
+        title: `${w.label} — Movexa`,
+        description: `${w.tagline} Browse, search and watch on Movexa.`,
+      })
+    } else if (route.name === 'search') {
+      const q = route.params.q || ''
+      setSeo({
+        title: q ? `Search: ${q} — Movexa` : 'Search — Movexa',
+        description: q
+          ? `Movies, TV series and anime matching "${q}" on Movexa.`
+          : 'Search movies, TV series and anime on Movexa.',
+      })
+    } else {
+      // Home, or the title route before the modal's TMDB data arrives.
+      setSeo(DEFAULT_SEO)
+    }
+  }, [route])
 
   function openTitle(item) {
     if (!item) return

@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-label="Movexa — Movies, TV Series and Anime">
+  <defs>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ff8a3d"/>
+      <stop offset="1" stop-color="#ff5e62"/>
+    </linearGradient>
+    <radialGradient id="bg" cx="50%" cy="36%" r="75%">
+      <stop offset="0" stop-color="#161a24"/>
+      <stop offset="1" stop-color="#0b0d13"/>
+    </radialGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <rect x="0" y="0" width="1200" height="6" fill="url(#accent)"/>
+  <g font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" text-anchor="middle">
+    <text x="600" y="315" font-size="150" font-weight="800" letter-spacing="-5" fill="#ffffff">Move<tspan fill="url(#accent)">xa</tspan></text>
+    <text x="600" y="392" font-size="34" font-weight="600" letter-spacing="6" fill="#c7ccd6">MOVIES · TV SERIES · ANIME</text>
+    <text x="600" y="446" font-size="23" font-weight="400" letter-spacing="2" fill="#8a91a0">Watch in widescreen</text>
+  </g>
+</svg>

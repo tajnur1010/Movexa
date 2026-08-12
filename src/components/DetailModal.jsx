@@ -4,6 +4,7 @@ import {
   formatRating, getYear, runtimeText, pickTrailer, normalize,
 } from '../lib/api.js'
 import { navigate, routes } from '../lib/router.js'
+import { setSeo, setJsonLd, removeJsonLd } from '../lib/seo.js'
 import { IconPlay, IconClose, IconStar } from './Icons.jsx'
 import Player from './Player.jsx'
 import SeasonPicker from './SeasonPicker.jsx'
@@ -46,6 +47,50 @@ export default function DetailModal({ type, id, onClose }) {
       .finally(() => { if (!cancelled) setLoading(false) })
     return () => { cancelled = true }
   }, [type, id])
+
+  // Enrich the document head with this title's SEO once TMDB data is in.
+  // Uses ONLY real TMDB fields — no fabricated ratings, reviews or keywords.
+  useEffect(() => {
+    if (!data) return
+    const name = data.title || data.name || 'Movexa'
+    const yr = getYear(data.release_date || data.first_air_date)
+    const kind = isTV ? 'TV series' : 'movie'
+    const genreNames = (data.genres || []).map(g => g.name)
+    const overview = (data.overview || '').trim()
+    const fallback = `Watch ${name}${yr ? ` (${yr})` : ''}${genreNames.length ? `, ${genreNames.slice(0, 3).join(', ')}` : ''} ${kind}, on Movexa.`
+    const raw = overview || fallback
+    const description = raw.length > 160 ? `${raw.slice(0, 157).trimEnd()}…` : raw
+    setSeo({
+      title: `${name}${yr ? ` (${yr})` : ''} — Watch on Movexa`,
+      description,
+    })
+
+    const ld = {
+      '@context': 'https://schema.org',
+      '@type': isTV ? 'TVSeries' : 'Movie',
+      name,
+      url: `https://movexa-sigma.vercel.app/#/title/${type}/${id}`,
+    }
+    if (overview) ld.description = overview
+    const img = posterUrl(data.poster_path, 'lg')
+    if (img) ld.image = img
+    const date = data.release_date || data.first_air_date
+    if (date) ld.datePublished = date
+    if (genreNames.length) ld.genre = genreNames
+    // aggregateRating only when TMDB actually holds votes — never invented.
+    if (data.vote_average > 0 && data.vote_count > 0) {
+      ld.aggregateRating = {
+        '@type': 'AggregateRating',
+        ratingValue: Number(data.vote_average).toFixed(1),
+        ratingCount: data.vote_count,
+        bestRating: 10,
+        worstRating: 1,
+      }
+    }
+    setJsonLd('title', ld)
+
+    return () => removeJsonLd('title')
+  }, [data, isTV, type, id])
 
   function scrollToPlayer() {
     setTimeout(() => playRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 60)
