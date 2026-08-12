@@ -72,11 +72,12 @@ export const api = {
 }
 
 // ── Embed URLs (multi-server with fallback) ───────────────────
-// Three independent providers. If one has no source / is down, the user can
-// switch servers in the player. None require an API key.
+// Independent providers. If one has no source / is down, the user can switch
+// servers in the player. None require an API key.
 //   Server 1 — VidSrc.sbs  (TMDB id; user-confirmed working)
 //   Server 2 — VidLink     (TMDB id)
 //   Server 3 — VidSrc      (movie by IMDb id, falls back to TMDB; TV by TMDB id)
+//   Server 4 — VidSrc.vip  (TMDB id)
 // If any provider rotates its domain, change its URL in BOTH helpers below.
 
 // `imdbId` is optional; used by Server 3 (VidSrc) which prefers IMDb ids for movies.
@@ -85,6 +86,7 @@ export function movieServers(tmdbId, imdbId) {
     { id: 'vidsrcsbs', label: 'Server 1', src: `https://vidsrc.sbs/embed/movie/${tmdbId}` },
     { id: 'vidlink', label: 'Server 2', src: `https://vidlink.pro/movie/${tmdbId}` },
     { id: 'vidsrc', label: 'Server 3', src: `https://vidsrcme.ru/embed/movie/${imdbId || tmdbId}` },
+    { id: 'vidsrcvip', label: 'Server 4', src: `https://vidsrc.vip/embed/movie/${tmdbId}` },
   ]
 }
 
@@ -93,6 +95,7 @@ export function tvServers(tmdbId, season, episode) {
     { id: 'vidsrcsbs', label: 'Server 1', src: `https://vidsrc.sbs/embed/tv/${tmdbId}/${season}/${episode}` },
     { id: 'vidlink', label: 'Server 2', src: `https://vidlink.pro/tv/${tmdbId}/${season}/${episode}` },
     { id: 'vidsrc', label: 'Server 3', src: `https://vidsrcme.ru/embed/tv/${tmdbId}/${season}/${episode}` },
+    { id: 'vidsrcvip', label: 'Server 4', src: `https://vidsrc.vip/embed/tv/${tmdbId}/${season}/${episode}` },
   ]
 }
 
