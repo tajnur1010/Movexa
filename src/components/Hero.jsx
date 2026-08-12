@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import { backdropUrl } from '../lib/api.js'
+import { routes, onNavClick } from '../lib/router.js'
 import { IconPlay, IconInfo, IconStar, IconChevronL, IconChevronR } from './Icons.jsx'
 import styles from './Hero.module.css'
 
@@ -67,12 +68,12 @@ export default function Hero({ items = [], onPlay, onInfo }) {
         {cur.overview && <p className={styles.overview}>{cur.overview}</p>}
 
         <div className={styles.actions}>
-          <button className={styles.play} onClick={() => onPlay?.(cur)}>
+          <a className={styles.play} href={routes.title(cur.mediaType, cur.id)} onClick={(e) => onNavClick(e, () => onPlay?.(cur))}>
             <IconPlay size={18} /> Play Now
-          </button>
-          <button className={styles.info} onClick={() => onInfo?.(cur)}>
+          </a>
+          <a className={styles.info} href={routes.title(cur.mediaType, cur.id)} onClick={(e) => onNavClick(e, () => onInfo?.(cur))}>
             <IconInfo size={18} /> Details
-          </button>
+          </a>
         </div>
       </div>
 

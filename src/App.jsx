@@ -1,5 +1,5 @@
 import React, { useRef, useEffect } from 'react'
-import { useHashRoute, navigate, routes } from './lib/router.js'
+import { useRoute, navigate, routes } from './lib/router.js'
 import Header from './components/Header.jsx'
 import DetailModal from './components/DetailModal.jsx'
 import Home from './pages/Home.jsx'
@@ -10,7 +10,7 @@ import { setSeo, DEFAULT_SEO } from './lib/seo.js'
 import styles from './App.module.css'
 
 export default function App() {
-  const route = useHashRoute()
+  const route = useRoute()
 
   // Remember the last non-modal route so the page behind the detail
   // modal stays put instead of flashing back to Home.

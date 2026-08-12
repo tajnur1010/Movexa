@@ -2,12 +2,13 @@
 // Client-side SEO helpers
 // Updates the document head as the SPA navigates between views.
 //
-// SCOPE NOTE: This helps browser tabs, bookmarks and Google's JS
-// rendering. Social scrapers (Facebook, Twitter/X, WhatsApp, Telegram)
-// do NOT execute JavaScript — they read the static tags baked into
-// index.html. That's why the canonical link, og:url and og:image are
-// left static in index.html and are intentionally NOT mutated here;
-// only the per-view title/description are updated.
+// SCOPE NOTE: Now that routing uses clean, distinct paths (/movie/27205,
+// /browse/anime, …) each view updates its own <title>, description,
+// canonical link and og:url so it's self-referential. This helps browser
+// tabs, bookmarks and Google's JS rendering (Googlebot executes JS).
+// Social scrapers (Facebook, Twitter/X, WhatsApp, Telegram) do NOT run
+// JavaScript — they read the static tags in index.html — so og:image /
+// twitter:image stay a single static brand image there and are not mutated.
 // ─────────────────────────────────────────────────────────────
 
 export const DEFAULT_TITLE = 'Movexa — Watch Movies, TV Series & Anime Online'
@@ -45,9 +46,20 @@ function setMetaByProperty(property, content) {
   el.setAttribute('content', content)
 }
 
+// Point a <link rel="…"> at an href, creating the tag if absent.
+function setLinkByRel(rel, href) {
+  if (!href) return
+  const el = upsertMeta(`link[rel="${rel}"]`, () => {
+    const l = document.createElement('link')
+    l.setAttribute('rel', rel)
+    return l
+  })
+  el.setAttribute('href', href)
+}
+
 // Update the mutable, per-view SEO fields. Missing fields fall back to
 // the site defaults so the head is never left blank.
-export function setSeo({ title, description } = {}) {
+export function setSeo({ title, description, canonical } = {}) {
   const finalTitle = title || DEFAULT_TITLE
   const finalDesc = description || DEFAULT_DESCRIPTION
   document.title = finalTitle
@@ -56,6 +68,12 @@ export function setSeo({ title, description } = {}) {
   setMetaByProperty('og:description', finalDesc)
   setMetaByName('twitter:title', finalTitle)
   setMetaByName('twitter:description', finalDesc)
+
+  // Self-referential canonical + og:url for the current clean URL. The query
+  // string is dropped so tracking params don't create duplicate-URL dilution.
+  const url = canonical || (window.location.origin + window.location.pathname)
+  setLinkByRel('canonical', url)
+  setMetaByProperty('og:url', url)
 }
 
 // Inject or replace a JSON-LD block identified by `id`. Passing a falsy

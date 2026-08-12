@@ -1,5 +1,6 @@
 import React, { useRef, useState, useEffect } from 'react'
 import { posterUrl, backdropUrl } from '../lib/api.js'
+import { routes, onNavClick } from '../lib/router.js'
 import { IconChevronL, IconChevronR, IconStar, IconPlay } from './Icons.jsx'
 import styles from './Row.module.css'
 
@@ -53,10 +54,11 @@ export default function Row({ title, eyebrow, items = [], loading, onSelect, var
               const isWide = variant === 'wide'
               const img = isWide ? backdropUrl(item.backdrop || item.poster, 'md') : posterUrl(item.poster, 'md')
               return (
-                <button
+                <a
                   key={`${item.mediaType}-${item.id}-${i}`}
+                  href={routes.title(item.mediaType, item.id)}
                   className={`${styles.item} ${isWide ? styles.wide : ''}`}
-                  onClick={() => onSelect?.(item)}
+                  onClick={(e) => onNavClick(e, () => onSelect?.(item))}
                   title={item.title}
                 >
                   <div className={styles.thumb}>
@@ -74,7 +76,7 @@ export default function Row({ title, eyebrow, items = [], loading, onSelect, var
                       {item.year && <span className={styles.capYear}>{item.year}</span>}
                     </div>
                   )}
-                </button>
+                </a>
               )
             })}
       </div>

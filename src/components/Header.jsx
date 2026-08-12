@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { WORLDS, PRIMARY_NAV, NAV_GROUPS } from '../data/worlds.js'
-import { navigate, routes } from '../lib/router.js'
+import { navigate, routes, onNavClick } from '../lib/router.js'
 import { Logo, IconSearch, IconClose, IconMenu, IconChevronD } from './Icons.jsx'
 import styles from './Header.module.css'
 
@@ -64,27 +64,29 @@ export default function Header({ route }) {
   return (
     <header className={`${styles.header} ${scrolled ? styles.scrolled : ''}`}>
       <div className={styles.inner}>
-        <button className={styles.brand} onClick={() => navigate(routes.home())} aria-label="Movexa home">
+        <a className={styles.brand} href={routes.home()} onClick={(e) => onNavClick(e, () => navigate(routes.home()))} aria-label="Movexa home">
           <Logo />
           <span className={styles.word}>Move<span className={styles.wordAccent}>xa</span></span>
-        </button>
+        </a>
 
         <nav className={styles.nav} aria-label="Primary">
-          <button
+          <a
             className={`${styles.link} ${isHome ? styles.active : ''}`}
-            onClick={() => navigate(routes.home())}
+            href={routes.home()}
+            onClick={(e) => onNavClick(e, () => navigate(routes.home()))}
           >
             Home
-          </button>
+          </a>
 
           {PRIMARY_NAV.map(key => (
-            <button
+            <a
               key={key}
               className={`${styles.link} ${activeWorld === key ? styles.active : ''}`}
-              onClick={() => navigate(routes.world(key))}
+              href={routes.world(key)}
+              onClick={(e) => onNavClick(e, () => navigate(routes.world(key)))}
             >
               {WORLDS[key].label}
-            </button>
+            </a>
           ))}
 
           <div className={styles.catWrap} ref={catRef}>
@@ -103,14 +105,15 @@ export default function Header({ route }) {
                   <div key={group.label} className={styles.dropGroup}>
                     <span className={styles.dropGroupLabel}>{group.label}</span>
                     {group.worlds.map(key => (
-                      <button
+                      <a
                         key={key}
                         role="menuitem"
                         className={`${styles.dropItem} ${activeWorld === key ? styles.dropItemActive : ''}`}
-                        onClick={() => navigate(routes.world(key))}
+                        href={routes.world(key)}
+                        onClick={(e) => onNavClick(e, () => navigate(routes.world(key)))}
                       >
                         {WORLDS[key].label}
-                      </button>
+                      </a>
                     ))}
                   </div>
                 ))}
@@ -151,19 +154,19 @@ export default function Header({ route }) {
 
       {menuOpen && (
         <div className={styles.mobileMenu}>
-          <button className={`${styles.mLink} ${isHome ? styles.active : ''}`} onClick={() => navigate(routes.home())}>Home</button>
+          <a className={`${styles.mLink} ${isHome ? styles.active : ''}`} href={routes.home()} onClick={(e) => onNavClick(e, () => navigate(routes.home()))}>Home</a>
           {PRIMARY_NAV.map(key => (
-            <button key={key} className={`${styles.mLink} ${activeWorld === key ? styles.active : ''}`} onClick={() => navigate(routes.world(key))}>
+            <a key={key} className={`${styles.mLink} ${activeWorld === key ? styles.active : ''}`} href={routes.world(key)} onClick={(e) => onNavClick(e, () => navigate(routes.world(key)))}>
               {WORLDS[key].label}
-            </button>
+            </a>
           ))}
           {NAV_GROUPS.map(group => (
             <div key={group.label} className={styles.mGroup}>
               <span className={styles.mGroupLabel}>{group.label}</span>
               {group.worlds.map(key => (
-                <button key={key} className={`${styles.mLink} ${activeWorld === key ? styles.active : ''}`} onClick={() => navigate(routes.world(key))}>
+                <a key={key} className={`${styles.mLink} ${activeWorld === key ? styles.active : ''}`} href={routes.world(key)} onClick={(e) => onNavClick(e, () => navigate(routes.world(key)))}>
                   {WORLDS[key].label}
-                </button>
+                </a>
               ))}
             </div>
           ))}

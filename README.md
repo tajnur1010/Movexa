@@ -48,13 +48,16 @@ Get a free TMDB key at https://www.themoviedb.org/settings/api
 - All tokens are CSS custom properties defined in `src/index.css`.
 
 ## Routing
-Hash-based, no dependencies (`src/lib/router.js`):
+Clean History-API paths, no dependencies (`src/lib/router.js`). A Vercel SPA
+rewrite (`vercel.json`) serves `index.html` for deep links, and legacy `#/…`
+URLs are redirected to their clean equivalents on load:
 
 ```
-#/                       Home
-#/w/hollywood            Category world (movies | series | anime | hollywood | bollywood | hindi)
-#/search/inception       Search results
-#/title/movie/27205      Detail modal (overlays the current page)
+/                        Home
+/browse/hollywood        Category world (movies | series | anime | hollywood | bollywood | south | telugu | bangla | korean | chinese)
+/search/inception        Search results
+/movie/27205             Movie detail (modal over the current page)
+/tv/94997                TV detail (modal over the current page)
 ```
 
 ## Project structure
@@ -63,7 +66,7 @@ Hash-based, no dependencies (`src/lib/router.js`):
 src/
 ├── lib/
 │   ├── api.js            # TMDB calls + embed/image URL helpers + normalize()
-│   └── router.js         # tiny hash router (useHashRoute, navigate, routes)
+│   └── router.js         # tiny history-API router (useRoute, navigate, routes, onNavClick)
 ├── data/
 │   └── worlds.js         # category definitions + sort mapping
 ├── components/

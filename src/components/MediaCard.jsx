@@ -1,5 +1,6 @@
 import React from 'react'
 import { posterUrl } from '../lib/api.js'
+import { routes, onNavClick } from '../lib/router.js'
 import { IconStar, IconPlay } from './Icons.jsx'
 import styles from './MediaCard.module.css'
 
@@ -9,10 +10,10 @@ export default function MediaCard({ item, onClick, selected }) {
   const poster = posterUrl(item.poster, 'md')
 
   return (
-    <button
-      type="button"
+    <a
+      href={routes.title(item.mediaType, item.id)}
       className={`${styles.card} ${selected ? styles.selected : ''}`}
-      onClick={() => onClick?.(item)}
+      onClick={(e) => onNavClick(e, () => onClick?.(item))}
       title={item.title}
     >
       <div className={styles.poster}>
@@ -38,6 +39,6 @@ export default function MediaCard({ item, onClick, selected }) {
         <span className={styles.title}>{item.title}</span>
         {item.year && <span className={styles.year}>{item.year}</span>}
       </div>
-    </button>
+    </a>
   )
 }

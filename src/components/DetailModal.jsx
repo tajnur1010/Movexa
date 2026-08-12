@@ -3,7 +3,7 @@ import {
   api, backdropUrl, posterUrl, profileUrl, movieServers, tvServers,
   formatRating, getYear, runtimeText, pickTrailer, normalize,
 } from '../lib/api.js'
-import { navigate, routes } from '../lib/router.js'
+import { navigate, routes, onNavClick } from '../lib/router.js'
 import { setSeo, setJsonLd, removeJsonLd } from '../lib/seo.js'
 import { IconPlay, IconClose, IconStar } from './Icons.jsx'
 import Player from './Player.jsx'
@@ -69,7 +69,7 @@ export default function DetailModal({ type, id, onClose }) {
       '@context': 'https://schema.org',
       '@type': isTV ? 'TVSeries' : 'Movie',
       name,
-      url: `https://movexa-sigma.vercel.app/#/title/${type}/${id}`,
+      url: `https://movexa-sigma.vercel.app/${type}/${id}`,
     }
     if (overview) ld.description = overview
     const img = posterUrl(data.poster_path, 'lg')
@@ -252,10 +252,11 @@ export default function DetailModal({ type, id, onClose }) {
                     <h2 className={styles.h2}>More Like This</h2>
                     <div className={styles.similarGrid}>
                       {similar.map(s => (
-                        <button
+                        <a
                           key={s.id}
                           className={styles.simCard}
-                          onClick={() => navigate(routes.title(s.mediaType, s.id))}
+                          href={routes.title(s.mediaType, s.id)}
+                          onClick={(e) => onNavClick(e, () => navigate(routes.title(s.mediaType, s.id)))}
                           title={s.title}
                         >
                           <div className={styles.simPoster}>
@@ -265,7 +266,7 @@ export default function DetailModal({ type, id, onClose }) {
                             )}
                           </div>
                           <span className={styles.simTitle}>{s.title}</span>
-                        </button>
+                        </a>
                       ))}
                     </div>
                   </section>
