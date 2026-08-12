@@ -60,11 +60,20 @@ export function navigate(path) {
   if (currentPath() === target) {
     // Force listeners to re-run even if the path is identical.
     window.dispatchEvent(new PopStateEvent('popstate'))
-    return
+  } else {
+    window.history.pushState({}, '', target)
+    // pushState doesn't emit popstate; nudge our listeners so the view updates.
+    window.dispatchEvent(new PopStateEvent('popstate'))
   }
-  window.history.pushState({}, '', target)
-  // pushState doesn't emit popstate; nudge our listeners so the view updates.
-  window.dispatchEvent(new PopStateEvent('popstate'))
+  // Detail (movie/tv) routes open as a modal OVER the current page, so keep the
+  // background scroll where it is. Every other target is a new page and should
+  // start at the top — without this, clicking a link low on the page (e.g. a
+  // footer nav link) leaves you scrolled to the bottom of the page you land on.
+  // Back / forward and modal-close use popstate (not navigate), so those still
+  // restore the previous scroll position.
+  if (!/^\/(movie|tv)\/\d/.test(target)) {
+    window.scrollTo(0, 0)
+  }
 }
 
 // Intercept an in-app anchor click so it navigates via the History API,
