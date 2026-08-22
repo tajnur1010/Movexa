@@ -35,7 +35,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '22'
-          cache: npm
 
       # JDK 17: Capacitor 6 generates Gradle 8.2.1 + AGP 8.2.1, which run on
       # JDK 8–20. JDK 21+ is rejected, so 17 is the safe, tested choice.
@@ -51,10 +50,13 @@ jobs:
       - name: Install Android build packages
         run: sdkmanager "platform-tools" "platforms;android-34" "build-tools;34.0.0"
 
-      # package-lock is intentionally not pre-synced with the new Capacitor deps,
-      # so `npm install` (not `npm ci`) resolves + installs them here.
+      # The committed package-lock.json was generated on Windows and predates the
+      # Capacitor deps; installing against it on Linux produced a corrupt/partial
+      # tree (missing vite chunks). Drop it for a clean, coherent install.
       - name: Install dependencies
-        run: npm install
+        run: |
+          rm -rf node_modules package-lock.json
+          npm install
 
       # npm on the runner sometimes leaves the node_modules/.bin shims without
       # the execute bit → "vite: Permission denied" (exit 127). Restore +x for
