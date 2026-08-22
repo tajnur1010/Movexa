@@ -40,11 +40,10 @@ jobs:
       # JDK 17: Capacitor 6 generates Gradle 8.2.1 + AGP 8.2.1, which run on
       # JDK 8–20. JDK 21+ is rejected, so 17 is the safe, tested choice.
       - name: Set up JDK 17
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: '17'
-          cache: gradle
 
       - name: Set up Android SDK
         uses: android-actions/setup-android@v3
