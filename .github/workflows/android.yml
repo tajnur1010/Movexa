@@ -56,6 +56,12 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      # npm on the runner sometimes leaves the node_modules/.bin shims without
+      # the execute bit → "vite: Permission denied" (exit 127). Restore +x for
+      # every locally-installed CLI (vite, cap, capacitor-assets) up front.
+      - name: Make local CLIs executable
+        run: chmod +x node_modules/.bin/*
+
       # Build the web app only (skip the sitemap postbuild — not needed in the
       # APK and it would hammer TMDB on every run).
       - name: Build web assets
