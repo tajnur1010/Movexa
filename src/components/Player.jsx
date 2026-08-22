@@ -62,14 +62,24 @@ export default function Player({ servers, src, label }) {
           onLoad={() => setLoaded(true)}
           allowFullScreen
           allow="autoplay; encrypted-media; fullscreen; picture-in-picture"
-          // Block the intrusive ad behaviour these third-party embeds ship with:
+          // Sandbox is per-server (see `sandbox` in api.js). Where it's applied,
           // withholding allow-popups / allow-top-navigation stops the new-tab
-          // pop-unders and full-page redirect ads that hijack a click. The video
-          // still needs scripts + same-origin (its own API/storage) and forms +
-          // presentation (settings UI, fullscreen/cast) to play normally.
-          // Note: overlay/banner ads *inside* the provider's frame are on their
-          // origin and can't be removed from our side.
-          sandbox="allow-scripts allow-same-origin allow-forms allow-presentation"
+          // pop-unders and full-page redirect ads that hijack a click, while
+          // scripts + same-origin (the player's own API/storage) and forms +
+          // presentation (settings UI, fullscreen/cast) keep playback working.
+          //
+          // Servers that set `sandbox: false` won't play while sandboxed, so the
+          // attribute is omitted entirely for them (React drops `undefined`) —
+          // their pop-under/redirect ads can return on the website. Inside the
+          // Android APK the native host blocklist still blocks the ad networks.
+          //
+          // Either way, overlay/banner ads *inside* the provider's frame sit on
+          // their origin and can't be removed from our side.
+          sandbox={
+            current.sandbox === false
+              ? undefined
+              : 'allow-scripts allow-same-origin allow-forms allow-presentation'
+          }
           title={label || 'Player'}
         />
       </div>

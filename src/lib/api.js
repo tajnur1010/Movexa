@@ -78,21 +78,29 @@ export const api = {
 //   Server 2 — VidLink     (TMDB id)
 //   Server 3 — VidSrc      (movie by IMDb id, falls back to TMDB; TV by TMDB id)
 // If any provider rotates its domain, change its URL in BOTH helpers below.
+//
+// `sandbox: false` — opt this server OUT of the iframe sandbox in Player.jsx.
+// Servers 2 and 3 refuse to play while sandboxed (user-confirmed 2026-08-22), so
+// they run unsandboxed; Server 1 works fine sandboxed and stays locked down, which
+// makes it the cleanest choice ad-wise. Trade-off: an unsandboxed server can open
+// pop-unders / redirect ads again. In the Android APK the native host blocklist
+// (native/android/adblock/) still blocks the ad networks either way, so the impact
+// is mostly on the website.
 
 // `imdbId` is optional; used by Server 3 (VidSrc) which prefers IMDb ids for movies.
 export function movieServers(tmdbId, imdbId) {
   return [
     { id: 'vidsrcsbs', label: 'Server 1', src: `https://vidsrc.sbs/embed/movie/${tmdbId}` },
-    { id: 'vidlink', label: 'Server 2', src: `https://vidlink.pro/movie/${tmdbId}` },
-    { id: 'vidsrc', label: 'Server 3', src: `https://vidsrcme.ru/embed/movie/${imdbId || tmdbId}` },
+    { id: 'vidlink', label: 'Server 2', src: `https://vidlink.pro/movie/${tmdbId}`, sandbox: false },
+    { id: 'vidsrc', label: 'Server 3', src: `https://vidsrcme.ru/embed/movie/${imdbId || tmdbId}`, sandbox: false },
   ]
 }
 
 export function tvServers(tmdbId, season, episode) {
   return [
     { id: 'vidsrcsbs', label: 'Server 1', src: `https://vidsrc.sbs/embed/tv/${tmdbId}/${season}/${episode}` },
-    { id: 'vidlink', label: 'Server 2', src: `https://vidlink.pro/tv/${tmdbId}/${season}/${episode}` },
-    { id: 'vidsrc', label: 'Server 3', src: `https://vidsrcme.ru/embed/tv/${tmdbId}/${season}/${episode}` },
+    { id: 'vidlink', label: 'Server 2', src: `https://vidlink.pro/tv/${tmdbId}/${season}/${episode}`, sandbox: false },
+    { id: 'vidsrc', label: 'Server 3', src: `https://vidsrcme.ru/embed/tv/${tmdbId}/${season}/${episode}`, sandbox: false },
   ]
 }
 
