@@ -82,6 +82,20 @@ jobs:
           node scripts/gen-icons.mjs
           npx capacitor-assets generate --android
 
+      # The native android/ folder is generated fresh above by `cap add android`,
+      # so our ad-blocking sources live in the repo (native/android/adblock/) and
+      # get copied in here — after sync, before Gradle. This overwrites the
+      # generated MainActivity with one that installs the ad-blocking WebViewClient.
+      - name: Inject in-app ad blocker (native WebView)
+        run: |
+          JAVA_DIR="android/app/src/main/java/com/movexa/app"
+          mkdir -p "$JAVA_DIR"
+          cp native/android/adblock/MainActivity.java        "$JAVA_DIR/MainActivity.java"
+          cp native/android/adblock/AdBlockWebViewClient.java "$JAVA_DIR/AdBlockWebViewClient.java"
+          cp native/android/adblock/AdHosts.java             "$JAVA_DIR/AdHosts.java"
+          echo "Injected ad-block sources into $JAVA_DIR:"
+          ls -la "$JAVA_DIR"
+
       - name: Build debug APK
         run: |
           cd android
