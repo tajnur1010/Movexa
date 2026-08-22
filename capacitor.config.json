@@ -1,0 +1,26 @@
+{
+  "appId": "com.movexa.app",
+  "appName": "Movexa",
+  "webDir": "dist",
+  "backgroundColor": "#0b0d13",
+  "android": {
+    "backgroundColor": "#0b0d13",
+    "allowMixedContent": true
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 900,
+      "launchAutoHide": true,
+      "backgroundColor": "#0b0d13",
+      "showSpinner": false,
+      "androidSpinnerStyle": "small",
+      "splashFullScreen": true,
+      "splashImmersive": true
+    },
+    "StatusBar": {
+      "style": "DARK",
+      "backgroundColor": "#0b0d13",
+      "overlaysWebView": false
+    }
+  }
+}

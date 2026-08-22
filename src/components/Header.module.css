@@ -156,6 +156,49 @@
   gap: 8px;
 }
 
+/* "Get App" / Download APK pill — marquee-glow accent so it reads as the
+   primary call to action in the bar. Hidden entirely inside the packaged app. */
+.apkBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  flex-shrink: 0;
+  padding: 9px 16px;
+  font-size: 13.5px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: #1a0d05;
+  background: var(--accent-line);
+  border: none;
+  border-radius: 40px;
+  white-space: nowrap;
+  box-shadow: 0 4px 16px rgba(255, 122, 61, 0.26);
+  transition: transform 0.2s var(--ease), box-shadow 0.2s var(--ease), filter 0.2s var(--ease);
+}
+.apkBtn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 22px rgba(255, 122, 61, 0.42);
+  filter: brightness(1.05);
+}
+.apkBtn:active { transform: translateY(0); }
+.apkBtn svg { flex-shrink: 0; }
+
+/* Full-width accent CTA at the foot of the mobile menu. */
+.mApkLink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  margin-top: 12px;
+  padding: 13px 14px;
+  font-size: 15px;
+  font-weight: 700;
+  color: #1a0d05;
+  background: var(--accent-line);
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(255, 122, 61, 0.24);
+}
+
 .searchForm {
   display: flex;
   align-items: center;
@@ -270,4 +313,11 @@
 
 @media (max-width: 480px) {
   .searchForm.searchOpen { width: min(240px, 52vw); }
+}
+
+/* On narrow phones the bar gets busy — collapse the pill to an icon-only
+   badge. The full-width CTA in the mobile menu still spells it out. */
+@media (max-width: 560px) {
+  .apkBtnText { display: none; }
+  .apkBtn { padding: 9px 12px; }
 }

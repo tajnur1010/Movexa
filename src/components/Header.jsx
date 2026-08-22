@@ -1,8 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { WORLDS, PRIMARY_NAV, NAV_GROUPS } from '../data/worlds.js'
 import { navigate, routes, onNavClick } from '../lib/router.js'
-import { Logo, IconSearch, IconClose, IconMenu, IconChevronD } from './Icons.jsx'
+import { isNative } from '../lib/native.js'
+import { Logo, IconSearch, IconClose, IconMenu, IconChevronD, IconDownload } from './Icons.jsx'
 import styles from './Header.module.css'
+
+// Direct link to the latest Android build published by the GitHub Actions
+// workflow (.github/workflows/android.yml → GitHub Release asset "movexa.apk").
+// `releases/latest/download/…` always resolves to the newest published release.
+export const APK_URL = 'https://github.com/tajnur1010/Movexa/releases/latest/download/movexa.apk'
 
 export default function Header({ route }) {
   const [scrolled, setScrolled] = useState(false)
@@ -60,6 +66,9 @@ export default function Header({ route }) {
     navigate(routes.search(term))
     inputRef.current?.blur()
   }
+
+  // Inside the packaged app there's no point offering the APK — hide it there.
+  const nativeApp = isNative()
 
   return (
     <header className={`${styles.header} ${scrolled ? styles.scrolled : ''}`}>
@@ -123,6 +132,19 @@ export default function Header({ route }) {
         </nav>
 
         <div className={styles.right}>
+          {!nativeApp && (
+            <a
+              className={styles.apkBtn}
+              href={APK_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Download the Movexa Android app (APK)"
+            >
+              <IconDownload size={17} />
+              <span className={styles.apkBtnText}>Get App</span>
+            </a>
+          )}
+
           <form className={`${styles.searchForm} ${searchOpen ? styles.searchOpen : ''}`} onSubmit={submitSearch}>
             <input
               ref={inputRef}
@@ -170,6 +192,18 @@ export default function Header({ route }) {
               ))}
             </div>
           ))}
+
+          {!nativeApp && (
+            <a
+              className={styles.mApkLink}
+              href={APK_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <IconDownload size={18} />
+              Download Android App
+            </a>
+          )}
         </div>
       )}
     </header>

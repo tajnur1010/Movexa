@@ -1,0 +1,112 @@
+name: Android APK
+
+# Builds the Movexa Android app (Capacitor) entirely in the cloud — nothing to
+# install locally — and publishes the APK as a GitHub Release, so the site's
+# "Get App" button (→ releases/latest/download/movexa.apk) always resolves.
+#
+# Run it: Actions → "Android APK" → Run workflow. It also runs automatically on
+# every push to main (doc-only changes are ignored).
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+    paths-ignore:
+      - '**.md'
+
+# The release step creates a tag + release, which needs write access to the repo.
+permissions:
+  contents: write
+
+# Never run two builds of the same ref at once; newer wins.
+concurrency:
+  group: android-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # Vite 7 needs Node >= 20.19 / 22.12 — use 22 to stay clear of the floor.
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      # JDK 17: Capacitor 6 generates Gradle 8.2.1 + AGP 8.2.1, which run on
+      # JDK 8–20. JDK 21+ is rejected, so 17 is the safe, tested choice.
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: gradle
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Install Android build packages
+        run: sdkmanager "platform-tools" "platforms;android-34" "build-tools;34.0.0"
+
+      # package-lock is intentionally not pre-synced with the new Capacitor deps,
+      # so `npm install` (not `npm ci`) resolves + installs them here.
+      - name: Install dependencies
+        run: npm install
+
+      # Build the web app only (skip the sitemap postbuild — not needed in the
+      # APK and it would hammer TMDB on every run).
+      - name: Build web assets
+        run: npx vite build
+
+      - name: Add Android platform
+        run: |
+          npx cap add android
+          npx cap sync android
+
+      # Best-effort branded icon + splash. If anything here fails the APK still
+      # ships (with Capacitor's default icon) rather than failing the build.
+      - name: Generate app icon + splash
+        continue-on-error: true
+        run: |
+          node scripts/gen-icons.mjs
+          npx capacitor-assets generate --android
+
+      - name: Build debug APK
+        run: |
+          cd android
+          chmod +x ./gradlew
+          ./gradlew assembleDebug --no-daemon --stacktrace
+
+      - name: Stage APK
+        run: cp android/app/build/outputs/apk/debug/app-debug.apk movexa.apk
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: movexa-android
+          path: movexa.apk
+          if-no-files-found: error
+
+      # Publish (or refresh) a versioned release marked "latest", so the stable
+      # URL releases/latest/download/movexa.apk always points at this build.
+      - name: Publish GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v1.0.${{ github.run_number }}
+          name: Movexa v1.0.${{ github.run_number }}
+          make_latest: true
+          files: movexa.apk
+          body: |
+            Movexa Android app (debug build) — install and open.
+
+            Download **movexa.apk** below. On your phone, allow "Install from
+            unknown sources" for your browser/file manager, then tap the file.
+
+            The website's **Get App** button always links here
+            (releases/latest/download/movexa.apk).
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
