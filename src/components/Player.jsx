@@ -62,6 +62,14 @@ export default function Player({ servers, src, label }) {
           onLoad={() => setLoaded(true)}
           allowFullScreen
           allow="autoplay; encrypted-media; fullscreen; picture-in-picture"
+          // Block the intrusive ad behaviour these third-party embeds ship with:
+          // withholding allow-popups / allow-top-navigation stops the new-tab
+          // pop-unders and full-page redirect ads that hijack a click. The video
+          // still needs scripts + same-origin (its own API/storage) and forms +
+          // presentation (settings UI, fullscreen/cast) to play normally.
+          // Note: overlay/banner ads *inside* the provider's frame are on their
+          // origin and can't be removed from our side.
+          sandbox="allow-scripts allow-same-origin allow-forms allow-presentation"
           title={label || 'Player'}
         />
       </div>
