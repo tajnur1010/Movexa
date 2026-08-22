@@ -2,6 +2,7 @@ import React, { useRef, useEffect } from 'react'
 import { useRoute, navigate, routes, onNavClick, canCloseToApp } from './lib/router.js'
 import Header from './components/Header.jsx'
 import DetailModal from './components/DetailModal.jsx'
+import UpdateBanner from './components/UpdateBanner.jsx'
 import Home from './pages/Home.jsx'
 import Browse from './pages/Browse.jsx'
 import Search from './pages/Search.jsx'
@@ -154,6 +155,9 @@ export default function App() {
           }}
         />
       )}
+
+      {/* Offers a newer APK inside the Android app; renders nothing on the web. */}
+      <UpdateBanner />
     </div>
   )
 }

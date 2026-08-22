@@ -3,6 +3,11 @@
   "appName": "Movexa",
   "webDir": "dist",
   "backgroundColor": "#0b0d13",
+  "server": {
+    "url": "https://movexa-sigma.vercel.app",
+    "androidScheme": "https",
+    "errorPath": "offline.html"
+  },
   "android": {
     "backgroundColor": "#0b0d13",
     "allowMixedContent": true

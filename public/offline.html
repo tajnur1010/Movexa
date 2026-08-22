@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<!--
+  Offline fallback for the Android app.
+
+  The APK is a native shell that loads the live site (capacitor.config.json →
+  server.url), so every website deploy reaches users instantly with no APK
+  update. The trade-off is that a cold start with no connection would show a
+  blank WebView — Capacitor loads THIS bundled page instead (server.errorPath).
+
+  Kept dependency-free and inline-styled: it must render with no network at all.
+  Lives in public/, so Vite copies it to dist/ and `cap sync` bundles it.
+-->
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>You're offline — Movexa</title>
+    <style>
+      *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+      html, body {
+        min-height: 100%;
+        background: #0b0d13;
+        color: #f4f6fb;
+        font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        line-height: 1.6;
+        -webkit-font-smoothing: antialiased;
+      }
+      body {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 28px;
+        text-align: center;
+        background-image: radial-gradient(900px 500px at 70% -10%, rgba(255, 138, 61, 0.10), transparent 60%);
+      }
+      .brand {
+        font-size: 30px;
+        font-weight: 800;
+        letter-spacing: -0.02em;
+        margin-bottom: 22px;
+      }
+      .brand span { color: #ff8a3d; }
+      .icon {
+        width: 60px;
+        height: 60px;
+        margin: 0 auto 20px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 27px;
+        background: rgba(255, 138, 61, 0.14);
+        border: 1px solid rgba(255, 255, 255, 0.10);
+      }
+      h1 { font-size: 20px; font-weight: 700; margin-bottom: 10px; }
+      p { color: #9aa3b4; font-size: 15px; max-width: 330px; margin: 0 auto; }
+      button {
+        margin-top: 24px;
+        padding: 13px 30px;
+        font: inherit;
+        font-weight: 700;
+        color: #14100c;
+        background: linear-gradient(90deg, #ffb23d 0%, #ff6a3d 55%, #ff5d5d 100%);
+        border: 0;
+        border-radius: 10px;
+        cursor: pointer;
+      }
+      button:active { opacity: 0.85; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <div class="brand">Move<span>xa</span></div>
+      <div class="icon" aria-hidden="true">&#9888;</div>
+      <h1>No internet connection</h1>
+      <p>
+        Movexa streams everything live, so it needs a connection. Check your
+        Wi-Fi or mobile data, then try again.
+      </p>
+      <button type="button" onclick="retry()">Try again</button>
+    </main>
+    <script>
+      // Reloading this page would just re-show the offline notice, so send the
+      // WebView back to the live site instead.
+      function retry() {
+        window.location.href = 'https://movexa-sigma.vercel.app/';
+      }
+      // Auto-retry the moment the device regains connectivity.
+      window.addEventListener('online', retry);
+    </script>
+  </body>
+</html>

@@ -96,6 +96,18 @@ jobs:
           echo "Injected ad-block sources into $JAVA_DIR:"
           ls -la "$JAVA_DIR"
 
+      # Stamp the build number into the APK so the app can tell whether it's out
+      # of date. Capacitor generates versionCode 1 / versionName "1.0" for every
+      # build; without this every APK would look identical and the in-app update
+      # prompt (src/lib/updater.js) could never fire. Kept in lockstep with the
+      # release tag below: versionName 1.0.<run> ↔ tag v1.0.<run>.
+      - name: Stamp app version
+        run: |
+          GRADLE=android/app/build.gradle
+          sed -i -E "s/versionCode +[0-9]+/versionCode ${{ github.run_number }}/" "$GRADLE"
+          sed -i -E "s/versionName +\"[^\"]*\"/versionName \"1.0.${{ github.run_number }}\"/" "$GRADLE"
+          grep -E "versionCode|versionName" "$GRADLE"
+
       - name: Build debug APK
         run: |
           cd android
